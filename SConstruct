@@ -1,3 +1,3 @@
 # -*- python -*-
 from lsst.sconsUtils import scripts
-scripts.BasicSConstruct("obs_dummy")
+scripts.BasicSConstruct("obs_test")

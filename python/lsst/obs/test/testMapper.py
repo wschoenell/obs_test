@@ -25,9 +25,9 @@ import re
 import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
 
-class DummyMapper(dafPersist.Mapper):
+class TestMapper(dafPersist.Mapper):
     def __init__(self, **kwargs):
-        policyFile = pexPolicy.DefaultPolicyFile("obs_lsstSim", "LsstSimMapper.paf", "policy")
+        policyFile = pexPolicy.DefaultPolicyFile("obs_test", "TestMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
 
         super(DummyMapper, self).__init__(policy, policyFile.getRepositoryPath(), **kwargs)

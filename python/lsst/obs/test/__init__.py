@@ -20,4 +20,4 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 from .version import *
-from dummyMapper import *
+from testMapper import *

@@ -1,0 +1,10 @@
+.scon*
+config.log
+*.pyc
+*.cfgc
+version.py
+tests/.tests
+doc/html
+doc/*.tag
+doc/*.inc
+doc/doxygen.conf

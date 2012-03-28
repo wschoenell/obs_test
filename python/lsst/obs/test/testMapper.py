@@ -31,6 +31,8 @@ class TestMapper(dafPersist.Mapper):
         super(TestMapper, self).__init__()
         self.root = root
         self.calibRoot = calibRoot
+        if outputRoot is None:
+            outputRoot = root
         self.outputRoot = outputRoot
         self.keyDict = dict(
                 skyTile=int,

@@ -107,7 +107,7 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getPythonType(), None)
         self.assertEqual(loc.getCppType(), "Config")
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
-        self.assertEqual(loc.getLocations(), [os.path.join(self.input,
+        self.assertEqual(loc.getLocations(), [os.path.join(self.output,
             "config-v85470982-r0,2-s1,1.py")])
         for k, v in dataId.iteritems():
             self.assertEqual(loc.getAdditionalData().get(k), v)
@@ -118,7 +118,7 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getPythonType(), "lsst.daf.base.PropertySet")
         self.assertEqual(loc.getCppType(), "PropertySet")
         self.assertEqual(loc.getStorageName(), "BoostStorage")
-        self.assertEqual(loc.getLocations(), [os.path.join(self.input,
+        self.assertEqual(loc.getLocations(), [os.path.join(self.output,
             "md-v85470982-r0,1-s1,0.boost")])
         for k, v in dataId.iteritems():
             self.assertEqual(loc.getAdditionalData().get(k), v)
@@ -173,7 +173,7 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getPythonType(), None)
         self.assertEqual(loc.getCppType(), "Config")
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
-        self.assertEqual(loc.getLocations(), [os.path.join(self.input,
+        self.assertEqual(loc.getLocations(), [os.path.join(self.output,
             "config-v85470982-r0,3-s1,1.py")])
         for k, v in dataId.iteritems():
             self.assertEqual(loc.getAdditionalData().get(k), v)

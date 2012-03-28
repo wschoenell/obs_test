@@ -127,13 +127,13 @@ class TestMapper(dafPersist.Mapper):
 
     def map_processCcd_config(self, dataId):
         loc = "config-v%(visit)d-r%(raft)s-s%(sensor)s.py" % dataId
-        loc = os.path.join(self.root, loc)
+        loc = os.path.join(self.outputRoot, loc)
         return dafPersist.ButlerLocation(None, "Config", "ConfigStorage",
                 [loc], dataId)
 
     def map_processCcd_metadata(self, dataId):
         loc = "md-v%(visit)d-r%(raft)s-s%(sensor)s.boost" % dataId
-        loc = os.path.join(self.root, loc)
+        loc = os.path.join(self.outputRoot, loc)
         return dafPersist.ButlerLocation(
                 "lsst.daf.base.PropertySet", "PropertySet", "BoostStorage",
                 [loc], dataId)

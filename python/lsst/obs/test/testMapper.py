@@ -118,7 +118,7 @@ class TestMapper(dafPersist.Mapper):
 
         return dataId
 
-    def map_raw(self, dataId):
+    def map_raw(self, dataId, write=False):
         loc = "raw-v%(visit)d-E%(snap)03d-r%(raft)s-s%(sensor)s-c%(channel)s.pickle" % dataId
         loc = os.path.join(self.root, loc)
         return dafPersist.ButlerLocation(None, "ImageU", "PickleStorage",
@@ -127,13 +127,13 @@ class TestMapper(dafPersist.Mapper):
     def std_raw(self, object, dataId):
         return str(object) + "/" + str(dataId['visit'])
 
-    def map_processCcd_config(self, dataId):
+    def map_processCcd_config(self, dataId, write=False):
         loc = "config-v%(visit)d-r%(raft)s-s%(sensor)s.py" % dataId
         loc = os.path.join(self.outputRoot, loc)
         return dafPersist.ButlerLocation(None, "Config", "ConfigStorage",
                 [loc], dataId)
 
-    def map_processCcd_metadata(self, dataId):
+    def map_processCcd_metadata(self, dataId, write=False):
         loc = "md-v%(visit)d-r%(raft)s-s%(sensor)s.boost" % dataId
         loc = os.path.join(self.outputRoot, loc)
         return dafPersist.ButlerLocation(

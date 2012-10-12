@@ -83,10 +83,12 @@ class TestMapper(dafPersist.Mapper):
                     del keyDict[l]
         return keyDict
 
-    def getCameraName(self):
+    @classmethod
+    def getCameraName(cls):
         return "test"
     
-    def getEupsPackageName(self):
+    @classmethod
+    def getEupsPackageName(cls):
         return "obs_test"
 
     def getDefaultLevel(self):

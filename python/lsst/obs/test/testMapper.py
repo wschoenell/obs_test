@@ -88,7 +88,7 @@ class TestMapper(dafPersist.Mapper):
         return "test"
     
     @classmethod
-    def getEupsPackageName(cls):
+    def getEupsProductName(cls):
         return "obs_test"
 
     def getDefaultLevel(self):

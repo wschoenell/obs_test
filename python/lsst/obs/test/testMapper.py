@@ -136,9 +136,9 @@ class TestMapper(dafPersist.Mapper):
         return str(object) + "/" + str(dataId['visit'])
 
     def map_processCcd_config(self, dataId, write=False):
-        loc = "config-v%(visit)d-r%(raft)s-s%(sensor)s.py" % dataId
+        loc = "config/processCcd.py"
         loc = os.path.join(self.outputRoot, loc)
-        return dafPersist.ButlerLocation(None, "Config", "ConfigStorage",
+        return dafPersist.ButlerLocation("lsst.pex.config.Config", "Config", "ConfigStorage",
                 [loc], dataId)
 
     def map_processCcd_metadata(self, dataId, write=False):

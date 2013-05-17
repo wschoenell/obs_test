@@ -26,6 +26,8 @@ import re
 import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
 
+__all__ = ["TestMapper"]
+
 class TestMapper(dafPersist.Mapper):
     def __init__(self, root=None, calibRoot=None, outputRoot=None, **kwargs):
         super(TestMapper, self).__init__()

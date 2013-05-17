@@ -20,4 +20,5 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 from .version import *
-from testMapper import *
+from .testConfig import *
+from .testMapper import *

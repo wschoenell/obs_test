@@ -140,7 +140,7 @@ class TestMapper(dafPersist.Mapper):
     def map_processCcd_config(self, dataId, write=False):
         loc = "config/processCcd.py"
         loc = os.path.join(self.outputRoot, loc)
-        return dafPersist.ButlerLocation("lsst.pex.config.Config", "Config", "ConfigStorage",
+        return dafPersist.ButlerLocation("lsst.obs.test.TestConfig", "Config", "ConfigStorage",
                 [loc], dataId)
 
     def map_processCcd_metadata(self, dataId, write=False):

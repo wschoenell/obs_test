@@ -104,7 +104,7 @@ class TestMapperTestCase(unittest.TestCase):
     def testMapConfigData(self):
         dataId = dict(visit=85470982, raft="0,2", sensor="1,1")
         loc = self.mapper.map_processCcd_config(dataId)
-        self.assertEqual(loc.getPythonType(), "lsst.pex.config.Config")
+        self.assertEqual(loc.getPythonType(), "lsst.obs.test.TestConfig")
         self.assertEqual(loc.getCppType(), "Config")
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,
@@ -170,7 +170,7 @@ class TestMapperTestCase(unittest.TestCase):
 
         dataId = dict(visit=85470982, raft="0,3", sensor="1,1")
         loc = self.mapper.map("processCcd_config", dataId)
-        self.assertEqual(loc.getPythonType(), "lsst.pex.config.Config")
+        self.assertEqual(loc.getPythonType(), "lsst.obs.test.TestConfig")
         self.assertEqual(loc.getCppType(), "Config")
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,

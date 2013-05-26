@@ -26,6 +26,8 @@ import re
 import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
 
+__all__ = ["TestMapper"]
+
 class TestMapper(dafPersist.Mapper):
     def __init__(self, root=None, calibRoot=None, outputRoot=None, **kwargs):
         super(TestMapper, self).__init__()
@@ -138,7 +140,7 @@ class TestMapper(dafPersist.Mapper):
     def map_processCcd_config(self, dataId, write=False):
         loc = "config/processCcd.py"
         loc = os.path.join(self.outputRoot, loc)
-        return dafPersist.ButlerLocation("lsst.pex.config.Config", "Config", "ConfigStorage",
+        return dafPersist.ButlerLocation("lsst.obs.test.TestConfig", "Config", "ConfigStorage",
                 [loc], dataId)
 
     def map_processCcd_metadata(self, dataId, write=False):

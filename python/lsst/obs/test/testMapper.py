@@ -23,7 +23,6 @@
 import os
 import re
 
-import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
 
 __all__ = ["TestMapper"]
@@ -72,6 +71,14 @@ class TestMapper(dafPersist.Mapper):
                             channel=channel
                             ))
 
+    def backup(self, datasetType, dataId):
+        """Rename any existing object with the given type and dataId.
+
+        The base lsst.daf.persisence.Mapper provide no implementation
+        and this simple mapper doesn't really need one.
+        """
+        print "Warning: TestMapper does not implement backups (datasetType=%s, dataId=%s)" % \
+            (datasetType, dataId)
 
     def keys(self):
         return self.keyDict.iterkeys()
@@ -148,6 +155,34 @@ class TestMapper(dafPersist.Mapper):
         loc = os.path.join(self.outputRoot, loc)
         return dafPersist.ButlerLocation(
                 "lsst.daf.base.PropertySet", "PropertySet", "BoostStorage",
+                [loc], dataId)
+
+    def map_icSrc(self, dataId, write=False):
+        loc = "icSrc/v%(visit)d-f%(filter)s/R%(raft)s/S%(sensor)s.fits" % dataId
+        loc = os.path.join(self.outputRoot, loc)
+        return dafPersist.ButlerLocation(
+                "lsst.afw.table.SourceCatalog", "SourceCatalog", "FitsCatalogStorage",
+                [loc], dataId)
+
+    def map_icSrc_schema(self, dataId, write=False):
+        loc = "schema/icSrc.fits"
+        loc = os.path.join(self.outputRoot, loc)
+        return dafPersist.ButlerLocation(
+                "lsst.afw.table.SourceCatalog", "SourceCatalog", "FitsCatalogStorage",
+                [loc], dataId)
+
+    def map_src(self, dataId, write=False):
+        loc = "src/v%(visit)d-f%(filter)s/R%(raft)s/S%(sensor)s.fits" % dataId
+        loc = os.path.join(self.outputRoot, loc)
+        return dafPersist.ButlerLocation(
+                "lsst.afw.table.SourceCatalog", "SourceCatalog", "FitsCatalogStorage",
+                [loc], dataId)
+
+    def map_src_schema(self, dataId, write=False):
+        loc = "schema/src.fits"
+        loc = os.path.join(self.outputRoot, loc)
+        return dafPersist.ButlerLocation(
+                "lsst.afw.table.SourceCatalog", "SourceCatalog", "FitsCatalogStorage",
                 [loc], dataId)
 
     def query_raw(self, level, format, dataId):

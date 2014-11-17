@@ -3,4 +3,4 @@ setupRequired(pex_policy)
 setupRequired(daf_persistence)
 setupRequired(pex_config)
 
-envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
+envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)

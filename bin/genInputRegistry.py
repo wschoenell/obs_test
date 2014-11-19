@@ -21,8 +21,8 @@ from __future__ import absolute_import, division, print_function
 # the GNU General Public License along with this program.  If not, 
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
+import argparse
 import glob
-from optparse import OptionParser
 import os
 import re
 import shutil
@@ -33,10 +33,12 @@ import lsst.daf.base as dafBase
 import lsst.afw.image as afwImage
 import lsst.skypix as skypix
 
-def process(dirList, inputRegistry, outputRegistry="registry.sqlite3"):
+DefaultOutputRegistry = "registry.sqlite3"
+
+def process(dirList, inputRegistry=None, outputRegistry="registry.sqlite3"):
     print("process(dirList=%s)" % (dirList,))
     if os.path.exists(outputRegistry):
-        sys.stderr.write("Output registry exists; will not overwrite.\n")
+        sys.stderr.write("Output registry %r exists; will not overwrite.\n" % (outputRegistry,))
         sys.exit(1)
     if inputRegistry is not None:
         if not os.path.exists(inputRegistry):
@@ -50,7 +52,7 @@ def process(dirList, inputRegistry, outputRegistry="registry.sqlite3"):
     if inputRegistry is None:
         # Create tables in new output registry.
         cmd = """CREATE TABLE raw (id INTEGER PRIMARY KEY AUTOINCREMENT,
-            visit INT, filter TEXT, ccd TEXT, taiObs TEXT, expTime DOUBLE)"""
+            visit INT, filter TEXT, taiObs TEXT, expTime DOUBLE)"""
         conn.execute(cmd)
         cmd = "CREATE TABLE raw_skyTile (id INTEGER, skyTile INTEGER)"
         conn.execute(cmd)
@@ -58,7 +60,7 @@ def process(dirList, inputRegistry, outputRegistry="registry.sqlite3"):
             taiObs TEXT, expTime DOUBLE, UNIQUE(visit))""")
         conn.commit()
     else:
-        cmd = """SELECT visit || '_f' || filter || || '_c' || ccd FROM raw"""
+        cmd = """SELECT visit || '_f' || filter || FROM raw"""
         for row in conn.execute(cmd):
             done[row[0]] = True
 
@@ -78,10 +80,11 @@ def process(dirList, inputRegistry, outputRegistry="registry.sqlite3"):
                 SELECT DISTINCT visit, filter, taiObs, expTime FROM raw""")
         conn.commit()
         conn.execute("""CREATE UNIQUE INDEX uq_raw ON raw
-                (visit, ccd)""")
+                (visit)""")
         conn.execute("CREATE INDEX ix_skyTile_id ON raw_skyTile (id)")
         conn.execute("CREATE INDEX ix_skyTile_tile ON raw_skyTile (skyTile)")
         conn.close()
+    print("wrote registry file %r" % (outputRegistry,))
 
 def processRawDir(rawDir, conn, done, qsp):
     print(rawDir, "... started")
@@ -89,14 +92,14 @@ def processRawDir(rawDir, conn, done, qsp):
     nSkipped = 0
     nUnrecognized = 0
     for fitsPath in glob.glob(os.path.join(rawDir, "*.fits*")):
-        m = re.search(r'raw_v(\d*)_f(.+)_c(\d+)\.fits', fitsPath)
+        m = re.search(r'raw_v(\d*)_f(.+)\.fits', fitsPath)
         if not m:
-            print >>sys.stderr, "Warning: Unrecognized file:", fitsPath
+            sys.stderr.write("Warning: Unrecognized file: %r\n" % (fitsPath,))
             nUnrecognized += 1
             continue
 
-        visit, filterName, ccd = m.groups()
-        key = "%s_f%s_c%s" % (visit, filterName, ccd)
+        visit, filterName = m.groups()
+        key = "%s_f%s" % (visit, filterName)
         if done.has_key(key):
             nSkipped += 1
             continue
@@ -107,8 +110,8 @@ def processRawDir(rawDir, conn, done, qsp):
         taiObs = dafBase.DateTime(mjdObs, dafBase.DateTime.MJD,
                 dafBase.DateTime.TAI).toString()[:-1]
         conn.execute("""INSERT INTO raw VALUES
-            (NULL, ?, ?, ?, ?, ?)""",
-            (visit, filterName, ccd, taiObs, expTime))
+            (NULL, ?, ?, ?, ?)""",
+            (visit, filterName, taiObs, expTime))
    
         for row in conn.execute("SELECT last_insert_rowid()"):
             id = row[0]
@@ -131,14 +134,10 @@ def processRawDir(rawDir, conn, done, qsp):
             (rawDir, nProcessed, nSkipped, nUnrecognized))
 
 if __name__ == "__main__":
-    parser = OptionParser(usage="""%prog [options] DIR ...
-
-DIR may be either a root directory containing a 'raw' subdirectory
-or a visit subdirectory.""")
-    parser.add_option("-i", dest="inputRegistry", help="input registry")
-    parser.add_option("-o", dest="outputRegistry", default="registry.sqlite3",
-            help="output registry (default=registry.sqlite3)")
-    (options, args) = parser.parse_args()
-    if len(args) < 1:
-        parser.error("Missing directory argument(s)")
-    process(args, options.inputRegistry, options.outputRegistry)
+    parser = argparse.ArgumentParser(description="Make a registry file for a data repository")
+    parser.add_argument("dir", nargs="+", help="one or more directories of data, e.g. data/input")
+    parser.add_argument("-i", "--input", help="input registry")
+    parser.add_argument("-o", "--output", default=DefaultOutputRegistry,
+            help="output registry (default=%s)" % (DefaultOutputRegistry,))
+    args = parser.parse_args()
+    process(args.dir, args.input, args.output)

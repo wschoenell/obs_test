@@ -20,12 +20,12 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 import numpy
-from lsst.afw.geom import Angle, arcseconds, Box2I, Extent2I, Point2I, RadialXYTransform, InvertedXYTransform
+import lsst.afw.cameraGeom as cameraGeom
+import lsst.afw.geom as afwGeom
 from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL, UR
-from lsst.afw.cameraGeom import Camera, DetectorConfig, FOCAL_PLANE, PUPIL, CameraTransformMap
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
 
-class TestCamera(Camera):
+class TestCamera(cameraGeom.Camera):
     """A simple test Camera
 
     There is one ccd with name "0"
@@ -49,14 +49,15 @@ class TestCamera(Camera):
     def __init__(self):
         """Construct a TestCamera
         """
-        plateScale = Angle(20, arcseconds) # plate scale, in angle on sky/mm
+        plateScale = afwGeom.Angle(20, afwGeom.arcseconds) # plate scale, in angle on sky/mm
         radialDistortion = 0.925 # radial distortion in mm/rad^2
         radialCoeff = numpy.array((0.0, 1.0, 0.0, radialDistortion)) / plateScale.asRadians()
-        focalPlaneToPupil = RadialXYTransform(radialCoeff)
-        pupilToFocalPlane = InvertedXYTransform(focalPlaneToPupil)
-        cameraTransformMap = CameraTransformMap(FOCAL_PLANE, {PUPIL: pupilToFocalPlane})
+        focalPlaneToPupil = afwGeom.RadialXYTransform(radialCoeff)
+        pupilToFocalPlane = afwGeom.InvertedXYTransform(focalPlaneToPupil)
+        cameraTransformMap = cameraGeom.CameraTransformMap(cameraGeom.FOCAL_PLANE,
+            {cameraGeom.PUPIL: pupilToFocalPlane})
         detectorList = self._makeDetectorList(pupilToFocalPlane, plateScale)
-        Camera.__init__(self, "test", detectorList, cameraTransformMap)
+        cameraGeom.Camera.__init__(self, "test", detectorList, cameraTransformMap)
 
     def _makeDetectorList(self, focalPlaneToPupil, plateScale):
         """Make a list of detectors
@@ -69,7 +70,8 @@ class TestCamera(Camera):
         detectorConfigList = self._makeDetectorConfigList()
         for detectorConfig in detectorConfigList:
             ampInfoCatalog = self._makeAmpInfoCatalog()
-            detector = makeDetector(detectorConfig, ampInfoCatalog, focalPlaneToPupil, plateScale.asArcseconds())
+            detector = makeDetector(detectorConfig, ampInfoCatalog, focalPlaneToPupil,
+                plateScale.asArcseconds())
             detectorList.append(detector)
         return detectorList
 
@@ -81,7 +83,7 @@ class TestCamera(Camera):
         # this camera has one detector that corresponds to a subregion of lsstSim detector R:2,2 S:0,0
         # with lower left corner 0, 1000 and dimensions 1018 x 2000
         # i.e. half of each of the following channels: 0,0, 0,1, 1,0 and 1,1
-        detector0Config = DetectorConfig()
+        detector0Config = cameraGeom.DetectorConfig()
         detector0Config.name = '0'
         detector0Config.id = 0
         detector0Config.serial = '0000011'
@@ -136,9 +138,9 @@ class TestCamera(Camera):
             for ampY in (0, 1):
                 record = ampCatalog.addNew()
                 record.setName("%d%d" % (ampX, ampY))
-                record.setBBox(Box2I(
-                    Point2I(ampX * xDataExtent, ampY * yDataExtent),
-                    Extent2I(xDataExtent, yDataExtent),
+                record.setBBox(afwGeom.Box2I(
+                    afwGeom.Point2I(ampX * xDataExtent, ampY * yDataExtent),
+                    afwGeom.Extent2I(xDataExtent, yDataExtent),
                 ))
 
                 x0Raw = ampX * xRawExtent
@@ -154,19 +156,19 @@ class TestCamera(Camera):
                     x0Data = x0Raw
                     x0Bias = x0Data + xDataExtent
 
-                record.setRawBBox(Box2I(
-                    Point2I(x0Raw, y0Raw),
-                    Extent2I(xRawExtent, yRawExtent),
+                record.setRawBBox(afwGeom.Box2I(
+                    afwGeom.Point2I(x0Raw, y0Raw),
+                    afwGeom.Extent2I(xRawExtent, yRawExtent),
                 ))
-                record.setRawDataBBox(Box2I(
-                    Point2I(x0Data, y0Raw),
-                    Extent2I(xDataExtent, yDataExtent),
+                record.setRawDataBBox(afwGeom.Box2I(
+                    afwGeom.Point2I(x0Data, y0Raw),
+                    afwGeom.Extent2I(xDataExtent, yDataExtent),
                 ))
-                record.setRawHorizontalOverscanBBox(Box2I(
-                    Point2I(x0Bias, y0Raw),
-                    Extent2I(xBiasExtent, yRawExtent),
+                record.setRawHorizontalOverscanBBox(afwGeom.Box2I(
+                    afwGeom.Point2I(x0Bias, y0Raw),
+                    afwGeom.Extent2I(xBiasExtent, yRawExtent),
                 ))
-                record.setRawXYOffset(Extent2I(x0Raw, y0Raw))
+                record.setRawXYOffset(afwGeom.Extent2I(x0Raw, y0Raw))
                 record.setReadoutCorner(readCorner)
                 record.setGain(gain)
                 record.setReadNoise(readNoise)
@@ -176,8 +178,8 @@ class TestCamera(Camera):
                 record.setHasRawInfo(True)
                 record.setRawFlipX(False)
                 record.setRawFlipY(False)
-                record.setRawVerticalOverscanBBox(Box2I()) # no vertical overscan
-                record.setRawPrescanBBox(Box2I()) # no horizontal prescan
+                record.setRawVerticalOverscanBBox(afwGeom.Box2I()) # no vertical overscan
+                record.setRawPrescanBBox(afwGeom.Box2I()) # no horizontal prescan
                 record.set(linThreshKey, float(linearityThreshold))
                 record.set(linMaxKey, float(linearityMax))
                 record.set(linUnitsKey, "DN")

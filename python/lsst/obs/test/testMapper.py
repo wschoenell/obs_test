@@ -26,7 +26,6 @@ import eups
 import lsst.afw.image.utils as afwImageUtils
 from lsst.daf.butlerUtils import CameraMapper
 import lsst.pex.policy as pexPolicy
-from lsst.daf.persistence import ButlerLocation
 from .testCamera import TestCamera
 
 __all__ = ["TestMapper"]
@@ -80,6 +79,11 @@ class TestMapper(CameraMapper):
         visit = dataId['visit']
         return long(visit)
 
+    def bypass_camera(self, *args, **kwargs):
+        """Return the camera object. All arguments are ignored.
+        """
+        print("***** bypass_camera(*args=%r, **kwargs=%r)" % (args, kwargs))
+        return self.camera
     def bypass_ccdExposureId(self, datasetType, pythonType, location, dataId):
         return self._computeCcdExposureId(dataId)
 
@@ -95,15 +99,3 @@ class TestMapper(CameraMapper):
     def _setCcdExposureId(self, propertyList, dataId):
         propertyList.set("Computed_ccdExposureId", self._computeCcdExposureId(dataId))
         return propertyList
-
-    def map_camera(self, dataId, write=False):
-        """Map a camera dataset."""
-        return ButlerLocation()
-
-    def std_camera(self, item, dataId):
-        """Standardize a camera dataset by converting it to a camera object.
-
-        @param[in] item: camera info (an lsst.afw.cameraGeom.CameraConfig)
-        @param[in] dataId: data ID dict
-        """
-        return self.camera

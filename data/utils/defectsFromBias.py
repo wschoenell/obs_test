@@ -1,11 +1,5 @@
 #!/usr/bin/env python2
-"""Construct a defects file from the mask plane of a test camera bias frame
-
-Example of usage:
-setup meas_algorithms
-setup ip_isr
-./defectsFromBias.py pathToBiasExposure
-"""
+from __future__ import absolute_import, division, print_function
 # 
 # LSST Data Management System
 # Copyright 2014 LSST Corporation.
@@ -27,9 +21,9 @@ setup ip_isr
 # the GNU General Public License along with this program.  If not, 
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-import sys
-import time
+import argparse
 import itertools
+import time
 
 import numpy
 import pyfits
@@ -38,7 +32,7 @@ import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 from lsst.ip.isr import getDefectListFromMask
 
-defectsPath = "defects_c0.fits"
+DefectsPath = "defects_c0.fits"
 detectorName = "0"
 detectorSerial = "0000011"
 
@@ -48,7 +42,7 @@ def getBBoxList(path, detectorName):
     with pyfits.open(path) as hduList:
         for hdu in hduList[1:]:
             if hdu.header["name"] != detectorName:
-                print "skipping header with name=%r" % (hdu.header["name"],)
+                print("skipping header with name=%r" % (hdu.header["name"],))
                 continue
 
             bboxList = []
@@ -80,21 +74,26 @@ def writeDefectsFile(bboxList, path, detectorSerial, detectorName):
     tbhdu = pyfits.new_table(cols, header = head)
     hdu = pyfits.PrimaryHDU()
     thdulist = pyfits.HDUList([hdu, tbhdu])
-    thdulist.writeto(defectsPath)
+    thdulist.writeto(DefectsPath)
 
-if len(sys.argv) != 2:
-    print "To use: defectsFromBias.py pathToBiasExposure"
-    sys.exit(1)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="""Construct a defects file from the mask plane of a test camera bias frame.
+To use this command you must setup ip_isr and pyfits.
+Output is written to the current directory as file %r, which must not already exist.
+""" % (DefectsPath,)
+    )
+    parser.add_argument("bias", help="path to bias image for the test camera")
+    args = parser.parse_args()
 
-biasPath = sys.argv[1]
-biasMI = afwImage.MaskedImageF(biasPath)
-defectList = getDefectListFromMask(biasMI, "BAD", growFootprints=0)
-bboxList = [defect.getBBox() for defect in defectList]
-writeDefectsFile(bboxList, defectsPath, detectorSerial, detectorName)
-print "wrote defects file %r" % (defectsPath,)
+    biasMI = afwImage.MaskedImageF(args.bias)
+    defectList = getDefectListFromMask(biasMI, "BAD", growFootprints=0)
+    bboxList = [defect.getBBox() for defect in defectList]
+    writeDefectsFile(bboxList, DefectsPath, detectorSerial, detectorName)
+    print("wrote defects file %r" % (DefectsPath,))
 
-test2BBoxList = getBBoxList(defectsPath, detectorName)
-assert len(bboxList) == len(test2BBoxList)
-for boxA, boxB in itertools.izip(bboxList, test2BBoxList):
-    assert boxA == boxB
-print "verified that the file %r round trips correctly" % (defectsPath,)
+    test2BBoxList = getBBoxList(DefectsPath, detectorName)
+    assert len(bboxList) == len(test2BBoxList)
+    for boxA, boxB in itertools.izip(bboxList, test2BBoxList):
+        assert boxA == boxB
+    print("verified that defects file %r round trips correctly" % (DefectsPath,))

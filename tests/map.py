@@ -45,7 +45,7 @@ class TestMapperTestCase(unittest.TestCase):
         del self.mapper
 
     def testMapConfigData(self):
-        dataId = dict(visit=1, ccd="0")
+        dataId = dict(visit=1)
         loc = self.mapper.map_processCcd_config(dataId)
         self.assertEqual(loc.getPythonType(), "lsst.pipe.tasks.processCcd.ProcessCcdConfig")
         self.assertEqual(loc.getCppType(), "Config")
@@ -56,7 +56,7 @@ class TestMapperTestCase(unittest.TestCase):
             self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testMapMetadataData(self):
-        dataId = dict(visit=1, ccd="0")
+        dataId = dict(visit=1)
         loc = self.mapper.map_processCcd_metadata(dataId)
         self.assertEqual(loc.getPythonType(), "lsst.daf.base.PropertySet")
         self.assertEqual(loc.getCppType(), "PropertySet")
@@ -81,16 +81,10 @@ class TestMapperTestCase(unittest.TestCase):
                 set(["filter", "visit"]))
 
     def testGetDefaultLevel(self):
-        self.assertEqual(self.mapper.getDefaultLevel(), "ccd")
-
-    def testGetDefaultSubLevel(self):
-        self.assertEqual(self.mapper.getDefaultSubLevel("skyTile"), "ccd")
-        self.assertEqual(self.mapper.getDefaultSubLevel("visit"), "ccd")
-        self.assertEqual(self.mapper.getDefaultSubLevel("ccd"), "amp") # is this right, or should it be "ccd"?
-        self.assertEqual(self.mapper.getDefaultSubLevel("amp"), None)
+        self.assertEqual(self.mapper.getDefaultLevel(), "visit")
 
     def testMap(self):
-        dataId = dict(visit=1, ccd="0")
+        dataId = dict(visit=1)
         for loc in (
             self.mapper.map_raw(dataId),
             self.mapper.map("raw", dataId),
@@ -108,10 +102,23 @@ class TestMapperTestCase(unittest.TestCase):
     def testQueryMetadata(self):
         """Test expansion of incomplete information
         """
-        tuples = self.mapper.queryMetadata("raw", "visit",
-                ["visit", "filter", "ccd"],
-                dict(visit=1))
-        self.assertTrue((1, 'g', '0') in tuples)
+        for visit, filt in ((1, "g"), (2, "g"), (3, "r")):
+            tuples = self.mapper.queryMetadata("raw", "visit",
+                    ["visit", "filter"],
+                    dict(visit=visit))
+            self.assertEqual(len(tuples), 1)
+            self.assertEqual(tuples[0], (visit, filt))
+
+        for filt, visitList in (
+            ("g", (1, 2)),
+            ("r", (3,)),
+        ):
+            tuples2 = self.mapper.queryMetadata("raw", "filter",
+                    ["visit", "filter"],
+                    dict(filter=filt))
+            self.assertEqual(len(tuples2), len(visitList))
+            for visit in visitList:
+                self.assertTrue((visit, filt) in tuples2)
 
     def testCanStandardize(self):
         self.assertEqual(self.mapper.canStandardize("raw"), True)
@@ -122,7 +129,7 @@ class TestMapperTestCase(unittest.TestCase):
     def testStandardizeRaw(self):
         pathToRaw = os.path.join(self.input, "raw", "raw_v1_fg.fits.gz")
         rawImage = afwImage.DecoratedImageU(pathToRaw)
-        dataId = dict(visit=1, ccd="0")
+        dataId = dict(visit=1)
         stdImage = self.mapper.standardize("raw", rawImage, dataId)
         self.assertTrue(isinstance(stdImage, afwImage.ExposureU))
 
@@ -133,7 +140,7 @@ class TestMapperTestCase(unittest.TestCase):
         ]:
             self.assertEqual(self.mapper.validate(dataId), dataId)
         for dataId in [
-            dict(visit="not-an-int", ccd="0"), # visit must be an integer
+            dict(visit="not-an-int"), # visit must be an integer
         ]:
             self.assertRaises(Exception, self.mapper.validate, dataId)
 

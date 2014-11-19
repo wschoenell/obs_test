@@ -1,13 +1,5 @@
 #!/usr/bin/env python2
-"""Make a mask image from a fits table of defects
-
-Example of usage:
-setup meas_algorithms
-setup obs_lsstSim -j
-./convertDefects.py $OBS_LSSTSIM_DIR/description/defects/rev_02272012
-
-If you prefer not to setup obs_lsstSim you can specify the whole path
-"""
+from __future__ import absolute_import, division, print_function
 # 
 # LSST Data Management System
 # Copyright 2014 LSST Corporation.
@@ -29,15 +21,16 @@ If you prefer not to setup obs_lsstSim you can specify the whole path
 # the GNU General Public License along with this program.  If not, 
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-import sys
+import argparse
 
 import pyfits
 
+import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 import lsst.meas.algorithms as measAlg
 from lsst.ip.isr import maskPixelsFromDefectList
 
-import lsst.afw.geom as afwGeom
+MaskFileName = "defectsMask.fits"
 
 def getBBoxList(path, detectorName):
     """Get a list of defects as a list of bounding boxes
@@ -45,7 +38,7 @@ def getBBoxList(path, detectorName):
     with pyfits.open(path) as hduList:
         for hdu in hduList[1:]:
             if hdu.header["name"] != detectorName:
-                print "skipping header with name=%r" % (hdu.header["name"],)
+                print("skipping hdu with name=%r" % (hdu.header["name"],))
                 continue
 
             bboxList = []
@@ -69,15 +62,24 @@ def writeDefectsFile(bboxList, path):
         nd = measAlg.Defect(bbox)
         defectList.append(nd)
     maskPixelsFromDefectList(defectsMaskedImage, defectList, maskName='BAD')
-    defectsMaskedImage.getMask().writeFits("defectMask.fits")
-    print "wrote defectsMask.fits with bbox", maskBBox,
+    defectsMaskedImage.getMask().writeFits(MaskFileName)
+    print("wrote %s with bbox %s" % (MaskFileName, maskBBox,))
 
-if len(sys.argv) != 3:
-    print "To use: convertDefects defects_fits_table detector_name"
-    sys.exit(1)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="""Make a mask image from a fits table of defects (for any camera).
+To use this command you must setup ip_isr and pyfits.
 
-defectsPath = sys.argv[1]
-detectorName = sys.argv[2]
-bboxList = getBBoxList(defectsPath, detectorName)
-print "found %d defects" % (len(bboxList),)
-writeDefectsFile(bboxList, detectorName)
+WARNING: the output file may be smaller than the detector data region, because the upper and right
+edges extend only as far as there are defects.
+
+Output is written to the current directory as file %r, which is OVERWRITTEN if it exists.
+""" % (MaskFileName,)
+    )
+    parser.add_argument("defects", help="path to defects file")
+    parser.add_argument("detector", help="detector name")
+    args = parser.parse_args()
+
+    bboxList = getBBoxList(args.defects, args.detector)
+    print("found %d defects" % (len(bboxList),))
+    writeDefectsFile(bboxList, args.detector)

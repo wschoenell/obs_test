@@ -5,16 +5,11 @@ defects:    "../description/defects"
 needCalibRegistry: false
 
 levels: {
-    skyTile: "visit" "ccd"
-    visit: "ccd" "amp"
-    ccd: "amp"
+    skyTile: "visit"
     tract: "patch"
 }
-defaultLevel: "ccd"
+defaultLevel: "visit"
 defaultSubLevels: {
-    skyTile: "ccd"
-    visit: "ccd"
-    ccd: "amp"
 }
 
 exposures: {
@@ -92,9 +87,6 @@ calibrations: {
         persistable:        "ExposureF"
         storage:    "FitsStorage"
         level:        "Ccd"
-        refCols: "ccd"
-        refCols: "visit"
-        refCols: "filter"
     }
     dark: {
         template:    "dark/dark.fits.gz"
@@ -102,9 +94,6 @@ calibrations: {
         persistable:        "ExposureF"
         storage:    "FitsStorage"
         level:        "Ccd"
-        refCols: "ccd"
-        refCols: "visit"
-        refCols: "filter"
     }
     flat: {
         template:    "flat/flat_f%(filter)s.fits.gz"
@@ -114,9 +103,6 @@ calibrations: {
         level:        "Ccd"
         reference:    "raw"
         columns:      "filter"
-        refCols: "ccd"
-        refCols: "visit"
-        refCols: "filter"
     }
     fringe: {
         template:    "fringe/fringe_f%(filter)s.fits.gz"
@@ -126,9 +112,6 @@ calibrations: {
         level:        "Ccd"
         reference:    "raw"
         columns:      "filter"
-        refCols: "ccd"
-        refCols: "visit"
-        refCols: "filter"
     }
 }
 

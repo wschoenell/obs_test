@@ -1,10 +1,5 @@
 #!/usr/bin/env python2
-from __future__ import absolute_import, division
-"""Assemble a set of LSSTSim channel images into one obs_test image
-
-Example of usage:
-./assembleLsstChannels.py <path-to-LSSTSim-repo>/raw/v890104911g_R22_S00/
-"""
+from __future__ import absolute_import, division, print_function
 # 
 # LSST Data Management System
 # Copyright 2014 LSST Corporation.
@@ -26,9 +21,11 @@ Example of usage:
 # the GNU General Public License along with this program.  If not, 
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-import os.path
-import sys
+"""Assemble a set of LSSTSim channel images into one obs_test image
+"""
+import argparse
 import glob
+import os.path
 import re
 
 import numpy
@@ -36,6 +33,7 @@ import numpy
 import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 
+OutFileName = "image.fits"
 SizeY = 1000 # number of pixels per amplifier in X direction (Y uses all pixels)
 
 KeysToCopy = (
@@ -57,12 +55,13 @@ def openChannelImage(dirPath, x, y):
         raise RuntimeError("Found %s instead of 1 file" % (inImagePathList,))
     inImagePath = inImagePathList[0]
     inImageFileName = os.path.basename(inImagePath)
+    # calib images (which are float) have names such as imsim_2_R22_S00_C00.fits
+    # raw images (which are unsigned int) have names such as imsim_890104911_R22_S00_C00_E000....
     if re.match(r"imsim_\d\d\d\d\d", inImageFileName):
-        # raw images are integer images
-        print "loading %s as raw unsigned integer data" % (inImageFileName,)
+        print("loading %s as raw unsigned integer data" % (inImageFileName,))
         exposureClass = afwImage.ExposureU
     else:
-        print "loading %s as float data" % (inImageFileName,)
+        print("loading %s as float data" % (inImageFileName,))
         exposureClass = afwImage.ExposureF
     return exposureClass(inImagePath)
 
@@ -71,10 +70,10 @@ def assembleImage(dirPath):
     """
     inExposure = openChannelImage(dirPath, 0, 0)
     fullInDim = inExposure.getDimensions()
-    yStart = fullInDim[1] - 1000
+    yStart = fullInDim[1] - SizeY
     if yStart < 0:
         raise RuntimeError("channel image unexpectedly small")
-    subDim = afwGeom.Extent2I(fullInDim[0], 1000) # dimensions of the portion of a channel that we use
+    subDim = afwGeom.Extent2I(fullInDim[0], SizeY) # dimensions of the portion of a channel that we use
     inSubBBox = afwGeom.Box2I(afwGeom.Point2I(0, yStart), subDim)
     outBBox = afwGeom.Box2I(afwGeom.Point2I(0, 0), subDim * 2)
     outExposure = inExposure.Factory(outBBox)
@@ -110,20 +109,18 @@ def assembleImage(dirPath):
             outMIView = outView.getMaskedImage()
             outMIView <<= inMIView
 
-    outExposure.writeFits("image.fits")
-    print "wrote assembled data as 'image.fits'"
+    outExposure.writeFits(OutFileName)
+    print("wrote assembled data as %r" % (OutFileName,))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print """"Usage: assembleLsstChannels.py [dir]
+    parser = argparse.ArgumentParser(
+        description="""Assemble a set of LSSTSim channel images into one obs_test image.
 
-dir is a directory containing LSSTSim channel images (at least for channels 0,0, 0,1, 1,0 and 1,1),
-and defaults to the current directory.
-Output is written to the current directory as "image.fits" (which is overwritten if it exists)
-"""
-        sys.exit(1)
-    if len(sys.argv) == 2:
-        dirPath = sys.argv[1]
-    else:
-        dirPath = "."
-    assembleImage(dirPath)
+Output is written to the current directory as file %r, which is OVERWRITTEN if it exists.
+""" % (OutFileName,),
+    )
+    parser.add_argument("dir", default=".", nargs="?", help="directory containing LSSTSim channel images " +
+        "(at least for channels 0,0, 0,1, 1,0 and 1,1); defaults to the current working directory.")
+    args = parser.parse_args()
+
+    assembleImage(args.dir)

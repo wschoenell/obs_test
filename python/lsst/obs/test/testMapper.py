@@ -90,6 +90,10 @@ class TestMapper(CameraMapper):
     def bypass_ccdExposureId_bits(self, datasetType, pythonType, location, dataId):
         return 41
 
+    @classmethod
+    def getEupsProductName(cls):
+        return "obs_test"
+
     def validate(self, dataId):
         visit = dataId.get("visit")
         if visit is not None and not isinstance(visit, int):

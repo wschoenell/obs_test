@@ -79,6 +79,10 @@ class TestMapper(CameraMapper):
         visit = dataId['visit']
         return long(visit)
 
+    @classmethod
+    def getEupsProductName(cls):
+        return "obs_test"
+
     def bypass_camera(self, *args, **kwargs):
         """Return the camera object. All arguments are ignored.
         """

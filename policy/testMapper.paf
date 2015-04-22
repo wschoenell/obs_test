@@ -492,16 +492,16 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    transformMeasurement_config: {
-        template:      "config/transform.py"
-        python:        "lsst.pipe.tasks.transformMeasurement.TransformConfig"
+    transformSrcMeasurement_config: {
+        template:      "config/transformSrcMeasurement.py"
+        python:        "lsst.pipe.tasks.transformMeasurement.SrcTransformConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
         tables:        raw
         tables:        raw_skyTile
     }
-    transformMeasurement_metadata: {
-        template:      "transformInterface_metadata/v%(visit)d_f%(filter)s.boost"
+    transformSrcMeasurement_metadata: {
+        template:      "transformSrcMeasurement_metadata/v%(visit)d_f%(filter)s.boost"
         python:        "lsst.daf.base.PropertySet"
         persistable:   "PropertySet"
         storage:       "BoostStorage"

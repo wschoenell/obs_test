@@ -316,16 +316,16 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    transformedSrc: {
-        template:      "transformedSrc/v%(visit)d_f%(filter)s.fits"
+    transformed_src: {
+        template:      "transformed_src/v%(visit)d_f%(filter)s.fits"
         python:        "lsst.afw.table.BaseCatalog"
         persistable:   "ignored"
         storage:       "FitsCatalogStorage"
         tables:        raw
         tables:        raw_skyTile
     }
-    transformedSrc_schema: {
-        template:      "schema/transformedSrc.fits"
+    transformed_src_schema: {
+        template:      "schema/transformed_src.fits"
         python:        "lsst.afw.table.BaseCatalog"
         persistable:   "ignored"
         storage:       "FitsCatalogStorage"

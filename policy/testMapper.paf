@@ -494,7 +494,7 @@ datasets: {
     }
     transformSrcMeasurement_config: {
         template:      "config/transformSrcMeasurement.py"
-        python:        "lsst.pipe.tasks.transformMeasurement.SrcTransformConfig"
+        python:        "lsst.pipe.tasks.transformMeasurement.RunTransformConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
         tables:        raw

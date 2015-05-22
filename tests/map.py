@@ -25,7 +25,7 @@
 import os
 import unittest
 
-import eups
+import lsst.utils
 import lsst.utils.tests as utilsTests
 from lsst.obs.test import TestMapper
 import lsst.afw.image as afwImage
@@ -34,9 +34,7 @@ class TestMapperTestCase(unittest.TestCase):
     """A test case for the test mapper."""
 
     def setUp(self):
-        obsTestDir = eups.productDir("obs_test")
-        if not obsTestDir:
-            raise RuntimeError("obs_test is not setup")
+        obsTestDir = lsst.utils.getPackageDir('obs_test')
         self.input = os.path.join(obsTestDir, "data", "input")
         self.output = self.input
         self.mapper = TestMapper(root=self.input)

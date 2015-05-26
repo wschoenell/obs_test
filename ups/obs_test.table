@@ -1,7 +1,9 @@
+setupRequired(afw)
 setupRequired(daf_base)
 setupRequired(daf_butlerUtils)
 setupRequired(pex_policy)
-setupRequired(daf_persistence)
 setupRequired(pex_config)
+# this is used by bin/genInputRegistry.py, which is only needed when creating a data repo
+setupOptional(skypix)
 
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)

@@ -31,8 +31,10 @@ from .testCamera import TestCamera
 __all__ = ["TestMapper"]
 
 class TestMapper(CameraMapper):
+    packageName = 'obs_test'
+
     def __init__(self, inputPolicy=None, **kwargs):
-        policyFile = pexPolicy.DefaultPolicyFile("obs_test", "testMapper.paf", "policy")
+        policyFile = pexPolicy.DefaultPolicyFile(self.packageName, "testMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
 
         self.doFootprints = False
@@ -89,10 +91,6 @@ class TestMapper(CameraMapper):
 
     def bypass_ccdExposureId_bits(self, datasetType, pythonType, location, dataId):
         return 41
-
-    @classmethod
-    def getEupsProductName(cls):
-        return "obs_test"
 
     def validate(self, dataId):
         visit = dataId.get("visit")

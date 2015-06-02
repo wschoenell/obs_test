@@ -68,7 +68,7 @@ def writeDefectsFile(bboxList, path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="""Make a mask image from a fits table of defects (for any camera).
-To use this command you must setup ip_isr and pyfits.
+To use this command you must setup meas_algorithms, ip_isr and pyfits.
 
 WARNING: the output file may be smaller than the detector data region, because the upper and right
 edges extend only as far as there are defects.

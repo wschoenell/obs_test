@@ -316,16 +316,16 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    transformedSrc: {
-        template:      "transformedSrc/v%(visit)d_f%(filter)s.fits"
+    transformed_src: {
+        template:      "transformed_src/v%(visit)d_f%(filter)s.fits"
         python:        "lsst.afw.table.BaseCatalog"
         persistable:   "ignored"
         storage:       "FitsCatalogStorage"
         tables:        raw
         tables:        raw_skyTile
     }
-    transformedSrc_schema: {
-        template:      "schema/transformedSrc.fits"
+    transformed_src_schema: {
+        template:      "schema/transformed_src.fits"
         python:        "lsst.afw.table.BaseCatalog"
         persistable:   "ignored"
         storage:       "FitsCatalogStorage"
@@ -492,16 +492,16 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    transformMeasurement_config: {
-        template:      "config/transform.py"
-        python:        "lsst.pipe.tasks.transformMeasurement.TransformConfig"
+    transformSrcMeasurement_config: {
+        template:      "config/transformSrcMeasurement.py"
+        python:        "lsst.pipe.tasks.transformMeasurement.RunTransformConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
         tables:        raw
         tables:        raw_skyTile
     }
-    transformMeasurement_metadata: {
-        template:      "transformInterface_metadata/v%(visit)d_f%(filter)s.boost"
+    transformSrcMeasurement_metadata: {
+        template:      "transformSrcMeasurement_metadata/v%(visit)d_f%(filter)s.boost"
         python:        "lsst.daf.base.PropertySet"
         persistable:   "PropertySet"
         storage:       "BoostStorage"

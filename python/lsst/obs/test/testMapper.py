@@ -22,7 +22,7 @@
 
 import os
 
-import eups
+import lsst.utils
 import lsst.afw.image.utils as afwImageUtils
 from lsst.daf.butlerUtils import CameraMapper
 import lsst.pex.policy as pexPolicy
@@ -67,9 +67,7 @@ class TestMapper(CameraMapper):
         @param dataId (dict) Dataset identifier
         @return (string) path to the defects file or None if not available
         """
-        obsTestDir = eups.productDir("obs_test")
-        if obsTestDir is None:
-            raise RuntimeError("obs_test must be setup")
+        obsTestDir = lsst.utils.getPackageDir('obs_test')
 
         return os.path.join(obsTestDir, "data", "input", "defects", "defects.fits")
 

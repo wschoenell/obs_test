@@ -1,6 +1,6 @@
 """lsstSim-specific overrides for the processCcd task
 """
-root.isr.doDark=False
-root.isr.doFringe=False
-root.calibrate.doAstrometry=False # no astrometry_net data?
-root.calibrate.doPhotoCal=False # forbidden if doAstrometry false
+config.isr.doDark=False
+config.isr.doFringe=False
+config.calibrate.doAstrometry=False # no astrometry_net data?
+config.calibrate.doPhotoCal=False # forbidden if doAstrometry false

@@ -28,6 +28,7 @@ import unittest
 import lsst.utils
 import lsst.utils.tests as utilsTests
 from lsst.obs.test import TestMapper
+from lsst.daf.persistence import Butler
 import lsst.afw.image as afwImage
 
 class TestMapperTestCase(unittest.TestCase):
@@ -120,7 +121,7 @@ class TestMapperTestCase(unittest.TestCase):
 
     def testCanStandardize(self):
         self.assertEqual(self.mapper.canStandardize("raw"), True)
-        self.assertEqual(self.mapper.canStandardize("camera"), True)
+        self.assertEqual(self.mapper.canStandardize("camera"), False)
         self.assertEqual(self.mapper.canStandardize("processCcd_config"), False)
         self.assertEqual(self.mapper.canStandardize("processCcd_metadata"), False)
 
@@ -130,6 +131,15 @@ class TestMapperTestCase(unittest.TestCase):
         dataId = dict(visit=1)
         stdImage = self.mapper.standardize("raw", rawImage, dataId)
         self.assertTrue(isinstance(stdImage, afwImage.ExposureU))
+
+    def testCameraFromButler(self):
+        """Test that the butler can return the camera
+        """
+        butler = Butler(self.input)
+        camera = butler.get("camera", immediate=True)
+        self.assertEqual(camera.getName(), self.mapper.camera.getName())
+        self.assertEqual(len(camera), len(self.mapper.camera))
+        self.assertEqual(len(camera[0]), len(self.mapper.camera[0]))
 
     def testValidate(self):
         for dataId in [

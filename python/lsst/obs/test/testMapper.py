@@ -79,11 +79,6 @@ class TestMapper(CameraMapper):
         visit = dataId['visit']
         return long(visit)
 
-    def bypass_camera(self, *args, **kwargs):
-        """Return the camera object. All arguments are ignored.
-        """
-        print("***** bypass_camera(*args=%r, **kwargs=%r)" % (args, kwargs))
-        return self.camera
     def bypass_ccdExposureId(self, datasetType, pythonType, location, dataId):
         return self._computeCcdExposureId(dataId)
 

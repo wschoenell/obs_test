@@ -120,10 +120,10 @@ class TestMapperTestCase(unittest.TestCase):
                 self.assertTrue((visit, filt) in tuples2)
 
     def testCanStandardize(self):
-        self.assertEqual(self.mapper.canStandardize("raw"), True)
-        self.assertEqual(self.mapper.canStandardize("camera"), False)
-        self.assertEqual(self.mapper.canStandardize("processCcd_config"), False)
-        self.assertEqual(self.mapper.canStandardize("processCcd_metadata"), False)
+        self.assertTrue(self.mapper.canStandardize("raw"))
+        self.assertFalse(self.mapper.canStandardize("camera"))
+        self.assertFalse(self.mapper.canStandardize("processCcd_config"))
+        self.assertFalse(self.mapper.canStandardize("processCcd_metadata"))
 
     def testStandardizeRaw(self):
         pathToRaw = os.path.join(self.input, "raw", "raw_v1_fg.fits.gz")

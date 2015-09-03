@@ -57,8 +57,6 @@ class TestMapper(CameraMapper):
         afwImageUtils.defineFilter('z', 866.85)
         afwImageUtils.defineFilter('y', 971.68, alias=['y4']) # official y filter
 
-        self.camera = TestCamera()
-
     def _extractDetectorName(self, dataId):
         return "0"
 
@@ -94,3 +92,9 @@ class TestMapper(CameraMapper):
     def _setCcdExposureId(self, propertyList, dataId):
         propertyList.set("Computed_ccdExposureId", self._computeCcdExposureId(dataId))
         return propertyList
+
+    def _makeCamera(self, policy, repositoryDir):
+        """Make a camera (instance of lsst.afw.cameraGeom.Camera) describing the camera geometry
+        """
+        return TestCamera()
+

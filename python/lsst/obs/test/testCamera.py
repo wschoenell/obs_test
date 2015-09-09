@@ -22,7 +22,7 @@
 import numpy
 import lsst.afw.cameraGeom as cameraGeom
 import lsst.afw.geom as afwGeom
-from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL, UR
+from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
 
 class TestCamera(cameraGeom.Camera):
@@ -145,16 +145,11 @@ class TestCamera(cameraGeom.Camera):
 
                 x0Raw = ampX * xRawExtent
                 y0Raw = ampY * yRawExtent
-                if ampY == 0:
-                    # bias region (which is prescan, in this case) is before the data
-                    readCorner = LL
-                    x0Bias = x0Raw
-                    x0Data = x0Bias + xBiasExtent
-                else:
-                    # bias region (which is prescan, in this case) is after the data
-                    readCorner = UR
-                    x0Data = x0Raw
-                    x0Bias = x0Data + xDataExtent
+
+                # bias region (which is prescan, in this case) is before the data
+                readCorner = LL
+                x0Bias = x0Raw
+                x0Data = x0Bias + xBiasExtent
 
                 record.setRawBBox(afwGeom.Box2I(
                     afwGeom.Point2I(x0Raw, y0Raw),

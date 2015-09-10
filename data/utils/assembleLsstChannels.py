@@ -49,7 +49,7 @@ KeysToCopy = (
 def openChannelImage(dirPath, x, y):
     """Open an LSSTSim channel image
     """
-    globStr =  os.path.join(dirPath, "imsim_*_R22_S00_C%d%d*" % (x, y))
+    globStr =  os.path.join(dirPath, "imsim_*_R22_S00_C%d%d*" % (y, x))
     inImagePathList = glob.glob(globStr)
     if len(inImagePathList) != 1:
         raise RuntimeError("Found %s instead of 1 file" % (inImagePathList,))
@@ -95,12 +95,12 @@ def assembleImage(dirPath):
             inView = inExposure.Factory(inExposure, inSubBBox)
             inMIView = inView.getMaskedImage()
 
-            # rotate the data by 180 degreees for the y = 1 channels
+            # flip image about x axis for the y = 1 channels
             if y == 1:
                 inArrList = inMIView.getArrays()
                 for arr in inArrList:
                     if numpy.any(arr != 0):
-                        arr[:, :] = numpy.array(arr[::-1, ::-1])
+                        arr[:,:] = numpy.flipud(arr)
 
             xStart = x * subDim[0]
             yStart = y * subDim[1]

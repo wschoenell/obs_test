@@ -22,7 +22,7 @@
 import numpy
 import lsst.afw.cameraGeom as cameraGeom
 import lsst.afw.geom as afwGeom
-from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL, UR
+from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
 
 class TestCamera(cameraGeom.Camera):
@@ -118,10 +118,7 @@ class TestCamera(cameraGeom.Camera):
         xBiasExtent = 4
         xRawExtent = xDataExtent + xBiasExtent
         yRawExtent = yDataExtent
-        gain = 1.7 # amplifier gain in e-/ADU
-        # bias = 1000 # amplifier bias
-        readNoise = 7.0 # amplifier read noise, in e-
-        # darkCurrent = 0.02 # amplifier dark current
+        readNoise = 3.975 # amplifier read noise, in e-
         linearityType = "PROPORTIONAL"
         linearityThreshold = 0
         linearityMax = 65535
@@ -136,6 +133,20 @@ class TestCamera(cameraGeom.Camera):
         ampCatalog = AmpInfoCatalog(schema)
         for ampX in (0, 1):
             for ampY in (0, 1):
+                # amplifier gain (e-/ADU) and read noiuse (ADU/pixel) from lsstSim raw data
+                # note that obs_test amp <ampX><ampY> = lsstSim amp C<ampY>,<ampX> (axes are swapped)
+                gain = {
+                    (0, 0): 1.7741,     # C0,0
+                    (0, 1): 1.65881,    # C1,0
+                    (1, 0): 1.74151,    # C0,1
+                    (1, 1): 1.67073,    # C1,1
+                }[(ampX, ampY)]
+                readNoise = {
+                    (0, 0): 3.97531706217237,   # C0,0
+                    (0, 1): 4.08263755342685,   # C1,0
+                    (1, 0): 4.02753931932633,   # C0,1
+                    (1, 1): 4.1890610691135,    # C1,1
+                }[(ampX, ampY)]
                 record = ampCatalog.addNew()
                 record.setName("%d%d" % (ampX, ampY))
                 record.setBBox(afwGeom.Box2I(
@@ -145,16 +156,11 @@ class TestCamera(cameraGeom.Camera):
 
                 x0Raw = ampX * xRawExtent
                 y0Raw = ampY * yRawExtent
-                if ampY == 0:
-                    # bias region (which is prescan, in this case) is before the data
-                    readCorner = LL
-                    x0Bias = x0Raw
-                    x0Data = x0Bias + xBiasExtent
-                else:
-                    # bias region (which is prescan, in this case) is after the data
-                    readCorner = UR
-                    x0Data = x0Raw
-                    x0Bias = x0Data + xDataExtent
+
+                # bias region (which is prescan, in this case) is before the data
+                readCorner = LL
+                x0Bias = x0Raw
+                x0Data = x0Bias + xBiasExtent
 
                 record.setRawBBox(afwGeom.Box2I(
                     afwGeom.Point2I(x0Raw, y0Raw),

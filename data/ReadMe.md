@@ -55,6 +55,12 @@ To make obs_test raw images, from the obs_test directory:
     data/utils/assembleLsstChannels.py /lsst4/krughoff/Tuesday_data/imSim/S12_lsstsim/raw/v890880321-fr/E000/R22/S00
     mv image.fits raw_v3_fr.fits
 
+To make an obs_test defects file from the bias frame generated above, from the obs_test directory:
+
+    setup -r .
+    data/utils/defectsFromBias.py data/input/bias/bias.fits.gz
+    mv defects_c0.fits data/input/defects/
+
 ## Hints for using the data
 
 To run processCcd.py (the r band image requires increasing nCrPixelMax to be successfully processed):

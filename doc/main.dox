@@ -1,0 +1,75 @@
+namespace lsst { namespace obs { namespace test {
+
+/**
+\mainpage lsst::obs::test; Simple camera and data repository for testing
+
+obs_test models a simple camera with one CCD and includes a data repository containing a few raw images
+and some associated calibration data.
+
+obs_test is designed to be used for unit tests that require camera geometry and/or a small data repository.
+
+### Camera
+
+The obs_test camera consists of a single CCD whose geometry matches a subregion of a single LSST CCD.
+The chosen LSST CCD is is near, but not at, the center of the LSST focal plane, in order to make the
+obs_test camera geometry nontrivial and to provide a bit of distortion. A subregion is used
+(rather than simply using an entire LSST CCD) in order to make the images smaller.
+
+In detail, the obs_test CCD, sensor 0, corresponds to the following LSST CCD subregion:
+- Raft R2,2 (the center raft)
+- CCD/sensor S0,0 (the lower left CCD in the raft)
+- Amplifiers/channels C0,0, C0,1, C1,0 C1,1, keeping only the 1000 pixels in Y nearest the center line
+  of the CCD
+
+obs_test CCD amplifiers map as follows to LSST CCD amplifiers:
+- "00" = "C0,0"
+- "10" = "C0,1"
+- "01" = "C1,0"
+- "11" = "C1,1"
+
+The data ID keys that may be used to identify "raw" images and (except for "amp") "calexp" images are:
+- `amp`: amplifier name: one of "00", "01", "10", "11" (not used for calexp)
+- `ccd`: ccd number: always 0
+- `filter`: filter name
+- `visit`: exposure number
+
+Like the LSST camera, the obs_test camera focal plane coordinates are rotated 90 degrees from pixel
+coordinates. (The focal plane coordinates are determined by the camera engineers, whereas CCD
+pixel coordinates are required to have x along rows and y along columns).
+
+### Data
+
+The `data` directory includes the following:
+- `ReadMe.md`: a file describing the data and how it was generated
+- `input`: the data repository. This includes three raw images and associated flats, biases and defects.
+- `utils`:  scripts used to generate the data from lsstSim data
+
+Unlike the LSST camera, but like most other cameras, obs_test raw images combine the data from all amplifiers
+into a single image.
+
+### Classes
+
+Useful classes include:
+- \ref testCamera.TestCamera "TestCamera": camera geometry for the obs_test camera.
+    Unlike most obs_* packages this package builds its own camera geometry (by instantiating this class),
+    rather than relying on the lsst.daf.butlerUtils.CameraMapper to load camera geometry data from
+    a persisted lsst.afw.cameraGeom.CameraConfig.
+- \ref testMapper.TestMapper "TestMapper": camera mapper for the obs_test camera
+
+
+### Example
+
+To obtain the camera geometry and a raw image:
+\code
+import os.path
+import lsst.utils
+import lsst.daf.persistence
+obsTestDir = lsst.utils.getPackageDir('obs_test')
+input = os.path.join(obsTestDir, "data", "input")
+butler = lsst.daf.persistence.Butler(root = input) # don't add to the input repo
+rawImage = butler.get("raw", dict(visit=1))
+cameraGeom = butler.get("camera")
+\endcode
+
+*/
+}}} // namespace lsst::obs::test

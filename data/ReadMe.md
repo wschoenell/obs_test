@@ -8,15 +8,10 @@ The data is derived from the following lsstSim data, on NCSA's lsst-dev machine:
 For reference, the associated astrometry_net_data is:
 /lsst2/krughoff/astrometry_net_data/imsim-2012-06-20-0
 
-The obs_test sensor is a 1018x2000 subregion of a single LSST sensor:
-    R2,2 (the center raft)
-    S0,0 (lower left sensor/detector)
-    C0,0, C0,1, C1,0 C1,1 but just the 1000 pixels in Y from each nearest the Y center line
-A subregion is used to keep the test images smaller. The region is chosen to be near, but not at,
-the center of the LSST focal plane, in order to make the obs_test camera geometry nontrivial
-and to provide a bit of distortion.
+The obs_test camera is described in doc/main.dox, but I will remind you that the obs_test camera
+has a single CCD "sensor 0" that corresponds to a subregion of LSST CCD R2,2 S0,0.
 
-The obs_test raw data uses E000 R22 S00 of the following lsstSim visits:
+The obs_test raw data uses data E000 R22 S00 of the following lsstSim visits:
     obs_test            lsstSim
     visit=1 filter=g    v890104911-fg
     visit=2 filter=g    v890106021-fg

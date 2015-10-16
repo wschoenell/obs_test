@@ -107,7 +107,7 @@ def assembleImage(dirPath):
             outSubBBox = afwGeom.Box2I(afwGeom.Point2I(xStart, yStart), subDim)
             outView = outExposure.Factory(outExposure, outSubBBox)
             outMIView = outView.getMaskedImage()
-            outMIView <<= inMIView
+            outMIView[:] = inMIView
 
     outExposure.writeFits(OutFileName)
     print("wrote assembled data as %r" % (OutFileName,))

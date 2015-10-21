@@ -88,6 +88,7 @@ def assembleImage(dirPath):
         if inMetadata.exists(key):
             outMetadata.set(key, inMetadata.get(key))
     outExposure.setMetadata(outMetadata)
+    outMI = outExposure.getMaskedImage()
 
     for x in (0, 1):
         for y in (0, 1):
@@ -105,9 +106,8 @@ def assembleImage(dirPath):
             xStart = x * subDim[0]
             yStart = y * subDim[1]
             outSubBBox = afwGeom.Box2I(afwGeom.Point2I(xStart, yStart), subDim)
-            outView = outExposure.Factory(outExposure, outSubBBox)
-            outMIView = outView.getMaskedImage()
-            outMIView <<= inMIView
+            outMIView = outMI.Factory(outMI, outSubBBox)
+            outMIView[:] = inMIView
 
     outExposure.writeFits(OutFileName)
     print("wrote assembled data as %r" % (OutFileName,))

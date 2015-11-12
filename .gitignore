@@ -10,3 +10,5 @@ doc/*.inc
 doc/doxygen.conf
 tests/data/input/config-*.py
 tests/data/input/md_*.boost
+bin/genInputRegistry.py
+bin/mkpickle.py

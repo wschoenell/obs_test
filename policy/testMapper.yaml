@@ -1,0 +1,138 @@
+calibrations:
+  bias: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF, storage: FitsStorage,
+    template: bias/bias.fits.gz}
+  dark: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF, storage: FitsStorage,
+    template: dark/dark.fits.gz}
+  flat: {columns: filter, level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
+    reference: raw, storage: FitsStorage, template: flat/flat_f%(filter)s.fits.gz}
+  fringe: {columns: filter, level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
+    reference: raw, storage: FitsStorage, template: fringe/fringe_f%(filter)s.fits.gz}
+datasets:
+  Mosaic_config: {persistable: Config, python: lsst.meas.mosaic.mosaicTask.MosaicConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/mosaic.py}
+  Mosaic_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet, storage: BoostStorage,
+    tables: raw_skyTile, template: metadata/Mosaic.boost}
+  ampExposureId: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: 'ignored:ampExposureId',
+    tables: raw, template: ignored}
+  ampExposureId_bits: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: 'ignored:ampExposureId_bits',
+    tables: raw, template: ignored}
+  apCorr: {persistable: ApertureCorrection, python: lsst.meas.algorithms.ApertureCorrection,
+    storage: PickleStorage, tables: raw_skyTile, template: apCorr/v%(visit)d_f%(filter)s.pickle}
+  badSource: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: results/st%(skyTile)d/badSource.fits}
+  badSourceHist: {persistable: DecoratedImageU, python: lsst.afw.image.DecoratedImageU,
+    storage: FitsStorage, tables: raw_skyTile, template: results/st%(skyTile)d/badSourceHist.fits}
+  badSource_schema: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: schema/badSource.fits}
+  calexpBackground: {persistable: PurePythonClass, python: lsst.afw.math.BackgroundList,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: calexp/v%(visit)d/bkgd.fits}
+  ccdExposureId: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: 'ignored:ccdExposureId',
+    tables: raw, template: ignored}
+  ccdExposureId_bits: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: 'ignored:ccdExposureId_bits',
+    tables: raw, template: ignored}
+  chiSquaredCoaddId: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: ignored,
+    tables: raw, template: ignored}
+  chiSquaredCoaddId_bits: {persistable: ignored, python: lsst.daf.base.PropertySet,
+    storage: ignored, tables: raw, template: ignored}
+  crDiffimSrc: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: crDiffimSrc/v%(visit)d_f%(filter)s.fits}
+  crDiffimSrc_schema: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/crDiffSrc.fits}
+  deepCoaddId: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: ignored,
+    tables: raw, template: ignored}
+  deepCoaddId_bits: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: ignored,
+    tables: raw, template: ignored}
+  deepCoadd_modelfits: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: deepCoadd_results/%(filter)s_t%(tract)d_p%(patch)s/modelfits_%(filter)s_%(tract)d_%(patch)s.fits}
+  deepCoadd_modelfits_schema: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/deepCoadd_modelfits.fits}
+  deepCoadd_multiModelfits: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: deepCoadd_results/%(filter)s_t%(tract)d_p%(patch)s/multiModelfits_%(filter)s_%(tract)d_%(patch)s.fits}
+  deepCoadd_multiModelfits_schema: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/deepCoadd_multiModelfits.fits}
+  forced_config: {persistable: Config, python: lsst.meas.base.forcedCcd.ForcedCcdMeasurementConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/forced.py}
+  forced_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet, storage: BoostStorage,
+    tables: raw_skyTile, template: forced_metadata/v%(visit)d_f%(filter)s.boost}
+  forced_schema: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: schema/forced.fits}
+  forced_src: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: forced/%(tract)d/v%(visit)d_f%(filter)s.fits}
+  goodSeeingCoaddId: {persistable: ignored, python: lsst.daf.base.PropertySet, storage: ignored,
+    tables: raw, template: ignored}
+  goodSeeingCoaddId_bits: {persistable: ignored, python: lsst.daf.base.PropertySet,
+    storage: ignored, tables: raw, template: ignored}
+  icMatch: {persistable: BaseCatalog, python: lsst.afw.table.BaseCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: icMatch/v%(visit)d_f%(filter)s.fits}
+  icSrc: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: icSrc/v%(visit)d_f%(filter)s.fits}
+  icSrc_schema: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/icSrc.fits}
+  invalidSource: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: results/st%(skyTile)d/invalidSource.fits}
+  invalidSource_schema: {persistable: ignored, python: lsst.afw.table.SourceCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/invalidSource.fits}
+  measureCcd_config: {persistable: Config, python: lsst.meas.multifit.measureCcd.MeasureCcdConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/measureCcd.py}
+  measureCcd_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
+    storage: BoostStorage, tables: raw_skyTile, template: measureCcd_metadata/v%(visit)d_f%(filter)s.boost}
+  modelfits: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: modelfits/v%(visit)d_f%(filter)s.fits}
+  modelfits_schema: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/modelfits.fits}
+  object: {persistable: ignored, python: lsst.ap.cluster.SourceClusterCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: results/st%(skyTile)d/object.fits}
+  object_schema: {persistable: ignored, python: lsst.ap.cluster.SourceClusterCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/object.fits}
+  processCcd_config: {persistable: Config, python: lsst.pipe.tasks.processCcd.ProcessCcdConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/processCcd.py}
+  processCcd_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
+    storage: BoostStorage, tables: raw_skyTile, template: processCcd_metadata/v%(visit)d_f%(filter)s.boost}
+  refcat: {persistable: SimpleCatalog, python: lsst.afw.table.SimpleCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: refcat.fits}
+  source: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: results/st%(skyTile)d/source.fits}
+  sourceAssoc_config: {persistable: Config, python: lsst.ap.tasks.sourceAssoc.SourceAssocConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/sourceAssoc.py}
+  sourceAssoc_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
+    storage: BoostStorage, tables: raw_skyTile, template: sourceAssoc_metadata/st%(skyTile)d/metadata.boost}
+  sourceHist: {persistable: DecoratedImageU, python: lsst.afw.image.DecoratedImageU,
+    storage: FitsStorage, tables: raw_skyTile, template: results/st%(skyTile)d/sourceHist.fits}
+  source_schema: {persistable: ignored, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: schema/source.fits}
+  src: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: src/v%(visit)d_f%(filter)s.fits}
+  src_schema: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: schema/src.fits}
+  test_config: {persistable: Config, python: lsst.obs.test.TestConfig, storage: ConfigStorage,
+    tables: raw_skyTile, template: config/test.py}
+  test_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet, storage: BoostStorage,
+    tables: raw_skyTile, template: test/v%(visit)d_f%(filter)s.boost}
+  transformSrcMeasurement_config: {persistable: Config, python: lsst.pipe.tasks.transformMeasurement.RunTransformConfig,
+    storage: ConfigStorage, tables: raw_skyTile, template: config/transformSrcMeasurement.py}
+  transformSrcMeasurement_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
+    storage: BoostStorage, tables: raw_skyTile, template: transformSrcMeasurement_metadata/v%(visit)d_f%(filter)s.boost}
+  transformed_src: {persistable: ignored, python: lsst.afw.table.BaseCatalog, storage: FitsCatalogStorage,
+    tables: raw_skyTile, template: transformed_src/v%(visit)d_f%(filter)s.fits}
+  transformed_src_schema: {persistable: ignored, python: lsst.afw.table.BaseCatalog,
+    storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/transformed_src.fits}
+defaultLevel: visit
+defaultSubLevels: {}
+defects: ../description/defects
+exposures:
+  calexp: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF, storage: FitsStorage,
+    tables: raw_skyTile, template: calexp/calexp_v%(visit)d_f%(filter)s.fits}
+  crDiffim: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
+    storage: FitsStorage, tables: raw_skyTile, template: crDiffim/crDiffim_v%(visit)d_f%(filter)s.fits}
+  fcr: {level: Ccd, persistable: ExposureI, python: lsst.afw.image.ExposureI, storage: FitsStorage,
+    tables: raw_skyTile, template: fcr/v%(visit)d_f%(filter)s.fcr.fits}
+  postISRCCD: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
+    storage: FitsStorage, tables: raw_skyTile, template: postISRCCD/postISRCCD_v%(visit)d_f%(filter)s.fits}
+  raw: {level: Ccd, persistable: DecoratedImageU, python: lsst.afw.image.DecoratedImageU,
+    storage: FitsStorage, tables: raw_skyTile, template: raw/raw_v%(visit)d_f%(filter)s.fits.gz}
+  visitim: {level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
+    storage: FitsStorage, tables: raw_skyTile, template: visitim/visitim_v%(visit)d_f%(filter)s.fits}
+  wcs: {level: Ccd, persistable: ExposureI, python: lsst.afw.image.ExposureI, storage: FitsStorage,
+    tables: raw_skyTile, template: wcs/v%(visit)d_f%(filter)s.wcs.fits}
+levels: {skyTile: visit, tract: patch}
+needCalibRegistry: false

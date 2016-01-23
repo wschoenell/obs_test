@@ -2,5 +2,6 @@
 """
 config.isr.doDark=False
 config.isr.doFringe=False
-config.calibrate.doAstrometry=False # no astrometry_net data?
-config.calibrate.doPhotoCal=False # forbidden if doAstrometry false
+# we don't have astrometry_net data (yet) so astrom and photo cal are impossible
+config.calibrate.doAstrometry=False
+config.calibrate.doPhotoCal=False

@@ -9,6 +9,7 @@ doc/html
 doc/*.tag
 doc/*.inc
 doc/doxygen.conf
+doc/xml
 tests/data/input/config-*.py
 tests/data/input/md_*.boost
 bin/genInputRegistry.py

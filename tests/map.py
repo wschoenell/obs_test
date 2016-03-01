@@ -137,6 +137,22 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(len(camera), len(self.mapper.camera))
         self.assertEqual(len(camera[0]), len(self.mapper.camera[0]))
 
+    def testExposureIdInfo(self):
+        butler = Butler(self.input)
+        expIdBits = self.mapper.bypass_ccdExposureId_bits( # args are ignored
+            datasetType = None,
+            pythonType = int,
+            location = None,
+            dataId = dict(),
+        )
+        for visit in (1, 2, 3):
+            dataId = dict(visit=visit)
+            expIdInfo = butler.get("expIdInfo", dataId=dataId)
+            self.assertEqual(expIdInfo.expId, visit)
+            self.assertEqual(expIdInfo.expBits, expIdBits)
+            self.assertEqual(expIdInfo.maxBits, 64)
+            self.assertEqual(expIdInfo.unusedBits, expIdInfo.maxBits-expIdBits)
+
     def testValidate(self):
         for dataId in [
             dict(visit=1),

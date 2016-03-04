@@ -102,9 +102,7 @@ class TestMapperTestCase(unittest.TestCase):
         """Test expansion of incomplete information
         """
         for visit, filt in ((1, "g"), (2, "g"), (3, "r")):
-            tuples = self.mapper.queryMetadata("raw", "visit",
-                    ["visit", "filter"],
-                    dict(visit=visit))
+            tuples = self.mapper.queryMetadata("raw", ["visit", "filter"], dict(visit=visit))
             self.assertEqual(len(tuples), 1)
             self.assertEqual(tuples[0], (visit, filt))
 
@@ -112,9 +110,7 @@ class TestMapperTestCase(unittest.TestCase):
             ("g", (1, 2)),
             ("r", (3,)),
         ):
-            tuples2 = self.mapper.queryMetadata("raw", "filter",
-                    ["visit", "filter"],
-                    dict(filter=filt))
+            tuples2 = self.mapper.queryMetadata("raw", ["visit", "filter"], dict(filter=filt))
             self.assertEqual(len(tuples2), len(visitList))
             for visit in visitList:
                 self.assertTrue((visit, filt) in tuples2)

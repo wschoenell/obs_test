@@ -52,8 +52,7 @@ class PolicyTestCase(unittest.TestCase):
             repoPolicy = pexPolicy.Policy_createPolicy(actualPolicyPath)
             template = repoPolicy.get('exposures.raw.template')
             mapperTemplate = mapper.mappings['raw'].template
-            try: self.assertEqual(template, mapperTemplate)
-            except: import pdb; pdb.set_trace()
+            self.assertEqual(template, mapperTemplate)
 
             # Run a simple test case to verify that although the package's policy was overloaded with some
             # values, other values specified in the policy file in the package are loaded.

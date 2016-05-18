@@ -179,6 +179,7 @@ class TestCamera(cameraGeom.Camera):
                 record.setGain(gain)
                 record.setReadNoise(readNoise)
                 record.setSaturation(linearityMax)
+                record.setSuspectLevel(float("nan"))
                 record.setLinearityCoeffs([float(val) for val in linearityCoeffs])
                 record.setLinearityType(linearityType)
                 record.setHasRawInfo(True)

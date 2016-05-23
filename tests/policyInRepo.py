@@ -27,7 +27,6 @@ import unittest
 
 from lsst.pex import policy as pexPolicy
 from lsst.obs.test import TestMapper
-import lsst.utils
 import lsst.utils.tests as utilsTests
 
 class PolicyTestCase(unittest.TestCase):
@@ -42,9 +41,10 @@ class PolicyTestCase(unittest.TestCase):
         """
 
         testData = (
-            # (os.path.join('data', 'policyInRepo'), os.path.join('data', 'policyInRepo', '_policy.paf')),
-            (os.path.join('data', 'policyInRepo1/a'), os.path.join('data', 'policyInRepo1', 'a', '_parent', '_policy.paf')),
-            (os.path.join('data', 'policyInRepo2/a'), os.path.join('data', 'policyInRepo2', 'a', '_parent', '_parent', '_policy.paf'))
+            (os.path.join('data', 'policyInRepo1/a'),
+                os.path.join('data', 'policyInRepo1', 'a', '_parent', '_policy.paf')),
+            (os.path.join('data', 'policyInRepo2/a'),
+                os.path.join('data', 'policyInRepo2', 'a', '_parent', '_parent', '_policy.paf'))
         )
 
         for mapperRoot, actualPolicyPath in testData:
@@ -52,8 +52,7 @@ class PolicyTestCase(unittest.TestCase):
             repoPolicy = pexPolicy.Policy_createPolicy(actualPolicyPath)
             template = repoPolicy.get('exposures.raw.template')
             mapperTemplate = mapper.mappings['raw'].template
-            try: self.assertEqual(template, mapperTemplate)
-            except: import pdb; pdb.set_trace()
+            self.assertEqual(template, mapperTemplate)
 
             # Run a simple test case to verify that although the package's policy was overloaded with some
             # values, other values specified in the policy file in the package are loaded.

@@ -126,9 +126,6 @@ class TestCamera(cameraGeom.Camera):
 
         schema = AmpInfoTable.makeMinimalSchema()
 
-        linThreshKey = schema.addField('linearityThreshold', type=float)
-        linMaxKey = schema.addField('linearityMaximum', type=float)
-        linUnitsKey = schema.addField('linearityUnits', type=str, size=9)
         self.ampInfoDict = {}
         ampCatalog = AmpInfoCatalog(schema)
         for ampX in (0, 1):
@@ -187,7 +184,4 @@ class TestCamera(cameraGeom.Camera):
                 record.setRawFlipY(False)
                 record.setRawVerticalOverscanBBox(afwGeom.Box2I()) # no vertical overscan
                 record.setRawPrescanBBox(afwGeom.Box2I()) # no horizontal prescan
-                record.set(linThreshKey, float(linearityThreshold))
-                record.set(linMaxKey, float(linearityMax))
-                record.set(linUnitsKey, "DN")
         return ampCatalog

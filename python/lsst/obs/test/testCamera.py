@@ -23,6 +23,7 @@ import numpy
 import lsst.afw.cameraGeom as cameraGeom
 import lsst.afw.geom as afwGeom
 from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
+from lsst.afw.cameraGeom import NullLinearityType
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
 
 class TestCamera(cameraGeom.Camera):
@@ -119,16 +120,12 @@ class TestCamera(cameraGeom.Camera):
         xRawExtent = xDataExtent + xBiasExtent
         yRawExtent = yDataExtent
         readNoise = 3.975 # amplifier read noise, in e-
-        linearityType = "PROPORTIONAL"
-        linearityThreshold = 0
-        linearityMax = 65535
-        linearityCoeffs = [linearityThreshold, linearityMax]
+        saturationLevel = 65535
+        linearityType = NullLinearityType
+        linearityCoeffs = [0, 0, 0, 0]
 
         schema = AmpInfoTable.makeMinimalSchema()
 
-        linThreshKey = schema.addField('linearityThreshold', type=float)
-        linMaxKey = schema.addField('linearityMaximum', type=float)
-        linUnitsKey = schema.addField('linearityUnits', type=str, size=9)
         self.ampInfoDict = {}
         ampCatalog = AmpInfoCatalog(schema)
         for ampX in (0, 1):
@@ -178,7 +175,7 @@ class TestCamera(cameraGeom.Camera):
                 record.setReadoutCorner(readCorner)
                 record.setGain(gain)
                 record.setReadNoise(readNoise)
-                record.setSaturation(linearityMax)
+                record.setSaturation(saturationLevel)
                 record.setSuspectLevel(float("nan"))
                 record.setLinearityCoeffs([float(val) for val in linearityCoeffs])
                 record.setLinearityType(linearityType)
@@ -187,7 +184,4 @@ class TestCamera(cameraGeom.Camera):
                 record.setRawFlipY(False)
                 record.setRawVerticalOverscanBBox(afwGeom.Box2I()) # no vertical overscan
                 record.setRawPrescanBBox(afwGeom.Box2I()) # no horizontal prescan
-                record.set(linThreshKey, float(linearityThreshold))
-                record.set(linMaxKey, float(linearityMax))
-                record.set(linUnitsKey, "DN")
         return ampCatalog

@@ -493,16 +493,40 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    processCcd_config: {
-        template:      "config/processCcd.py"
-        python:        "lsst.pipe.tasks.processCcd.ProcessCcdConfig"
+    processCcd_metadata: {
+        template:      "processCcd_metadata/v%(visit)d_f%(filter)s.boost"
+        python:        "lsst.daf.base.PropertySet"
+        persistable:        "PropertySet"
+        storage:    "BoostStorage"
+        tables:        raw
+        tables:        raw_skyTile
+    }
+    isr_config: {
+        template:      "config/isr.py"
+        python:        "lsst.ip.isr.IsrTaskConfig"
         persistable:      "Config"
         storage:    "ConfigStorage"
         tables:        raw
         tables:        raw_skyTile
     }
-    processCcd_metadata: {
-        template:      "processCcd_metadata/v%(visit)d_f%(filter)s.boost"
+    isr_metadata: {
+        template:      "isr_metadata/v%(visit)d_f%(filter)s.boost"
+        python:        "lsst.daf.base.PropertySet"
+        persistable:        "PropertySet"
+        storage:    "BoostStorage"
+        tables:        raw
+        tables:        raw_skyTile
+    }
+    characterizeImage_metadata: {
+        template:      "characterizeImage_metadata/v%(visit)d_f%(filter)s.boost"
+        python:        "lsst.daf.base.PropertySet"
+        persistable:        "PropertySet"
+        storage:    "BoostStorage"
+        tables:        raw
+        tables:        raw_skyTile
+    }
+    calibrate_metadata: {
+        template:      "calibrate_metadata/v%(visit)d_f%(filter)s.boost"
         python:        "lsst.daf.base.PropertySet"
         persistable:        "PropertySet"
         storage:    "BoostStorage"

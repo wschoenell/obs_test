@@ -1,7 +1,10 @@
-"""lsstSim-specific overrides for the processCcd task
+"""obs_test-specific overrides for the processCcd task
 """
-config.isr.doDark=False
-config.isr.doFringe=False
-# we don't have astrometry_net data (yet) so astrom and photo cal are impossible
-config.calibrate.doAstrometry=False
-config.calibrate.doPhotoCal=False
+import os.path
+from lsst.utils import getPackageDir
+
+configDir = os.path.join(getPackageDir("obs_test"), "config")
+config.isr.load(os.path.join(configDir, 'isr.py'))
+
+configDir = os.path.join(getPackageDir("obs_test"), "config")
+config.calibrate.load(os.path.join(configDir, 'calibrate.py'))

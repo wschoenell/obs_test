@@ -493,14 +493,6 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    processCcd_config: {
-        template:      "config/processCcd.py"
-        python:        "lsst.pipe.tasks.processCcd.ProcessCcdConfig"
-        persistable:      "Config"
-        storage:    "ConfigStorage"
-        tables:        raw
-        tables:        raw_skyTile
-    }
     processCcd_metadata: {
         template:      "processCcd_metadata/v%(visit)d_f%(filter)s.boost"
         python:        "lsst.daf.base.PropertySet"
@@ -525,27 +517,11 @@ datasets: {
         tables:        raw
         tables:        raw_skyTile
     }
-    characterizeImage_config: {
-        template:      "config/characterizeImage.py"
-        python:        "lsst.pipe.tasks.characterizeImage.CharacterizeImageConfig"
-        persistable:      "Config"
-        storage:    "ConfigStorage"
-        tables:        raw
-        tables:        raw_skyTile
-    }
     characterizeImage_metadata: {
         template:      "characterizeImage_metadata/v%(visit)d_f%(filter)s.boost"
         python:        "lsst.daf.base.PropertySet"
         persistable:        "PropertySet"
         storage:    "BoostStorage"
-        tables:        raw
-        tables:        raw_skyTile
-    }
-    calibrate_config: {
-        template:      "config/calibrate.py"
-        python:        "lsst.pipe.tasks.calibrate.CalibrateConfig"
-        persistable:      "Config"
-        storage:    "ConfigStorage"
         tables:        raw
         tables:        raw_skyTile
     }

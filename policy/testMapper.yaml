@@ -84,20 +84,14 @@ datasets:
     tables: raw_skyTile, template: results/st%(skyTile)d/object.fits}
   object_schema: {persistable: ignored, python: lsst.ap.cluster.SourceClusterCatalog,
     storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/object.fits}
-  processCcd_config: {persistable: Config, python: lsst.pipe.tasks.processCcd.ProcessCcdConfig,
-    storage: ConfigStorage, tables: raw_skyTile, template: config/processCcd.py}
   processCcd_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
     storage: BoostStorage, tables: raw_skyTile, template: processCcd_metadata/v%(visit)d_f%(filter)s.boost}
   isr_config: {persistable: Config, python: lsst.ip.isr.IsrTaskConfig,
     storage: ConfigStorage, tables: raw_skyTile, template: config/isr.py}
   isr_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
     storage: BoostStorage, tables: raw_skyTile, template: isr_metadata/v%(visit)d_f%(filter)s.boost}
-  characterizeImage_config: {persistable: Config, python: lsst.pipe.tasks.characterizeImage.CharacterizeImageConfig,
-    storage: ConfigStorage, tables: raw_skyTile, template: config/characterizeImage.py}
   characterizeImage_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
     storage: BoostStorage, tables: raw_skyTile, template: characterizeImage_metadata/v%(visit)d_f%(filter)s.boost}
-  calibrate_config: {persistable: Config, python: lsst.pipe.tasks.calibrate.CalibrateConfig,
-    storage: ConfigStorage, tables: raw_skyTile, template: config/calibrate.py}
   calibrate_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet,
     storage: BoostStorage, tables: raw_skyTile, template: calibrate_metadata/v%(visit)d_f%(filter)s.boost}
   refcat: {persistable: SimpleCatalog, python: lsst.afw.table.SimpleCatalog, storage: FitsCatalogStorage,

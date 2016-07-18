@@ -584,7 +584,7 @@ datasets: {
     }
     IngestIndexedReferenceTask_config: {
         template:      "config/IngestIndexedReferenceTask.py"
-        python:        "lsst.pipe.tasks.indexReferenceTask.IngestIndexedReferenceConfig"
+        python:        "lsst.meas.algorithms.IngestIndexedReferenceConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
     }

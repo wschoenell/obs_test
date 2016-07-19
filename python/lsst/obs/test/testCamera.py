@@ -57,22 +57,20 @@ class TestCamera(cameraGeom.Camera):
         pupilToFocalPlane = afwGeom.InvertedXYTransform(focalPlaneToPupil)
         cameraTransformMap = cameraGeom.CameraTransformMap(cameraGeom.FOCAL_PLANE,
             {cameraGeom.PUPIL: pupilToFocalPlane})
-        detectorList = self._makeDetectorList(pupilToFocalPlane, plateScale)
+        detectorList = self._makeDetectorList(pupilToFocalPlane)
         cameraGeom.Camera.__init__(self, "test", detectorList, cameraTransformMap)
 
-    def _makeDetectorList(self, focalPlaneToPupil, plateScale):
+    def _makeDetectorList(self, focalPlaneToPupil):
         """Make a list of detectors
 
         @param[in] focalPlaneToPupil  lsst.afw.geom.XYTransform from FOCAL_PLANE to PUPIL coordinates
-        @param[in] plateScale  plate scale, in angle on sky/mm
         @return a list of detectors (lsst.afw.cameraGeom.Detector)
         """
         detectorList = []
         detectorConfigList = self._makeDetectorConfigList()
         for detectorConfig in detectorConfigList:
             ampInfoCatalog = self._makeAmpInfoCatalog()
-            detector = makeDetector(detectorConfig, ampInfoCatalog, focalPlaneToPupil,
-                plateScale.asArcseconds())
+            detector = makeDetector(detectorConfig, ampInfoCatalog, focalPlaneToPupil)
             detectorList.append(detector)
         return detectorList
 

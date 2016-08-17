@@ -25,18 +25,18 @@
 import os
 import unittest
 
-import lsst.utils
-import lsst.utils.tests as utilsTests
+import lsst.utils.tests
+from lsst.utils import getPackageDir
 from lsst.obs.test import TestMapper
 from lsst.daf.persistence import Butler
-import lsst.afw.image as afwImage
+from lsst.afw.image import DecoratedImageU, ExposureU
 
 
 class TestMapperTestCase(unittest.TestCase):
     """A test case for the test mapper."""
 
     def setUp(self):
-        obsTestDir = lsst.utils.getPackageDir('obs_test')
+        obsTestDir = getPackageDir('obs_test')
         self.input = os.path.join(obsTestDir, "data", "input")
         self.output = self.input
         self.mapper = TestMapper(root=self.input)
@@ -124,10 +124,10 @@ class TestMapperTestCase(unittest.TestCase):
 
     def testStandardizeRaw(self):
         pathToRaw = os.path.join(self.input, "raw", "raw_v1_fg.fits.gz")
-        rawImage = afwImage.DecoratedImageU(pathToRaw)
+        rawImage = DecoratedImageU(pathToRaw)
         dataId = dict(visit=1)
         stdImage = self.mapper.standardize("raw", rawImage, dataId)
-        self.assertIsInstance(stdImage, afwImage.ExposureU)
+        self.assertIsInstance(stdImage, ExposureU)
 
     def testCameraFromButler(self):
         """Test that the butler can return the camera
@@ -167,16 +167,16 @@ class TestMapperTestCase(unittest.TestCase):
 
 
 def suite():
-    utilsTests.init()
+    lsst.utils.tests.init()
 
     suites = []
     suites += unittest.makeSuite(TestMapperTestCase)
-    suites += unittest.makeSuite(utilsTests.MemoryTestCase)
+    suites += unittest.makeSuite(lsst.utils.tests.MemoryTestCase)
     return unittest.TestSuite(suites)
 
 
 def run(shouldExit=False):
-    utilsTests.run(suite(), shouldExit)
+    lsst.utils.tests.run(suite(), shouldExit)
 
 if __name__ == '__main__':
     run(True)

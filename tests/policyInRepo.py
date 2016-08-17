@@ -25,9 +25,9 @@
 import os
 import unittest
 
-from lsst.pex import policy as pexPolicy
+import lsst.pex.policy
 from lsst.obs.test import TestMapper
-import lsst.utils.tests as utilsTests
+import lsst.utils.tests
 
 
 class PolicyTestCase(unittest.TestCase):
@@ -50,7 +50,7 @@ class PolicyTestCase(unittest.TestCase):
 
         for mapperRoot, actualPolicyPath in testData:
             mapper = TestMapper(root=mapperRoot)
-            repoPolicy = pexPolicy.Policy_createPolicy(actualPolicyPath)
+            repoPolicy = lsst.pex.policy.Policy_createPolicy(actualPolicyPath)
             template = repoPolicy.get('exposures.raw.template')
             mapperTemplate = mapper.mappings['raw'].template
             self.assertEqual(template, mapperTemplate)
@@ -58,23 +58,23 @@ class PolicyTestCase(unittest.TestCase):
             # Run a simple test case to verify that although the package's policy was overloaded with some
             # values, other values specified in the policy file in the package are loaded.
             policyPath = os.path.join('policy', 'testMapper.paf')
-            policy = pexPolicy.Policy_createPolicy(policyPath)
+            policy = lsst.pex.policy.Policy_createPolicy(policyPath)
             template = policy.get('exposures.postISRCCD.template')
             mapperTemplate = mapper.mappings['postISRCCD'].template
             self.assertEqual(template, mapperTemplate)
 
 
 def suite():
-    utilsTests.init()
+    lsst.utils.tests.init()
 
     suites = []
     suites += unittest.makeSuite(PolicyTestCase)
-    suites += unittest.makeSuite(utilsTests.MemoryTestCase)
+    suites += unittest.makeSuite(lsst.utils.tests.MemoryTestCase)
     return unittest.TestSuite(suites)
 
 
 def run(shouldExit=False):
-    utilsTests.run(suite(), shouldExit)
+    lsst.utils.tests.run(suite(), shouldExit)
 
 if __name__ == '__main__':
     run(True)

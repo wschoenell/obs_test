@@ -26,9 +26,9 @@ import collections
 import os
 import unittest
 
-from lsst.daf.persistence import Policy as dafPolicy
-import lsst.pex.policy as pex_policy
-import lsst.utils.tests as utilsTests
+import lsst.daf.persistence
+import lsst.pex.policy
+import lsst.utils.tests
 
 
 class PolicyTestCase(unittest.TestCase):
@@ -37,8 +37,8 @@ class PolicyTestCase(unittest.TestCase):
     def loadPolicy(self):
         pafPolicyPath = os.path.join(os.environ['OBS_TEST_DIR'], 'policy', 'testMapper.paf')
         self.assertTrue(os.path.exists(pafPolicyPath))
-        pexPolicy = pex_policy.Policy.createPolicy(pafPolicyPath)
-        policy = dafPolicy(filePath=pafPolicyPath)
+        pexPolicy = lsst.pex.policy.Policy.createPolicy(pafPolicyPath)
+        policy = lsst.daf.persistence.Policy(filePath=pafPolicyPath)
         return (policy, pexPolicy)
 
     def test(self):
@@ -51,14 +51,14 @@ class PolicyTestCase(unittest.TestCase):
             else:
                 pexVal = pexPolicy.get(name)
             val = policy[name]
-            if isinstance(val, dafPolicy):
+            if isinstance(val, lsst.daf.persistence.Policy):
                 self.assertEqual(pexPolicy.getValueType(name), pexPolicy.POLICY)
             else:
                 self.assertEqual(val, pexVal)
 
         for name in pexPolicy.names():
             if pexPolicy.getValueType(name) == pexPolicy.POLICY:
-                self.assertIsInstance(policy.get(name), dafPolicy)
+                self.assertIsInstance(policy.get(name), lsst.daf.persistence.Policy)
             else:
                 if pexPolicy.isArray(name):
                     pexVal = pexPolicy.getArray(name)
@@ -77,9 +77,9 @@ class PolicyTestCase(unittest.TestCase):
     def testDumpAndLoad(self):
         pafPolicyPath = os.path.join(os.environ['OBS_TEST_DIR'], 'policy', 'testMapper.paf')
         self.assertTrue(os.path.exists(pafPolicyPath))
-        pexPolicy = pex_policy.Policy.createPolicy(pafPolicyPath)
+        pexPolicy = lsst.pex.policy.Policy.createPolicy(pafPolicyPath)
 
-        policy = dafPolicy(filePath=pafPolicyPath)
+        policy = lsst.daf.persistence.Policy(filePath=pafPolicyPath)
         policyPath = os.path.join(os.environ['OBS_TEST_DIR'], 'policy', 'tempTestMapper.yaml')
         if os.path.exists(policyPath):
             os.remove(policyPath)
@@ -87,18 +87,18 @@ class PolicyTestCase(unittest.TestCase):
         policy.dump(policyFile)
         self.assertTrue(os.path.exists(policyPath))
 
-        pexPolicy = pex_policy.Policy.createPolicy(pafPolicyPath)
+        pexPolicy = lsst.pex.policy.Policy.createPolicy(pafPolicyPath)
 
         # test that the data went through the entire wringer correctly - verify the
-        # original pex data matches the dafPolicy data
-        yamlPolicy = dafPolicy(filePath=policyPath)
+        # original pex data matches the lsst.daf.persistence.Policy data
+        yamlPolicy = lsst.daf.persistence.Policy(filePath=policyPath)
         yamlNames = yamlPolicy.names()
         yamlNames.sort()
         pexNames = pexPolicy.names()
         pexNames.sort()
         self.assertEqual(yamlNames, pexNames)
         for name in yamlNames:
-            if not isinstance(yamlPolicy[name], dafPolicy):
+            if not isinstance(yamlPolicy[name], lsst.daf.persistence.Policy):
                 yamlPolicyVal = yamlPolicy[name]
                 if isinstance(yamlPolicyVal, collections.Iterable) and \
                         not isinstance(yamlPolicyVal, basestring):
@@ -110,16 +110,16 @@ class PolicyTestCase(unittest.TestCase):
 
 
 def suite():
-    utilsTests.init()
+    lsst.utils.tests.init()
 
     suites = []
     suites += unittest.makeSuite(PolicyTestCase)
-    suites += unittest.makeSuite(utilsTests.MemoryTestCase)
+    suites += unittest.makeSuite(lsst.utils.tests.MemoryTestCase)
     return unittest.TestSuite(suites)
 
 
 def run(shouldExit=False):
-    utilsTests.run(suite(), shouldExit)
+    lsst.utils.tests.run(suite(), shouldExit)
 
 if __name__ == '__main__':
     run(True)

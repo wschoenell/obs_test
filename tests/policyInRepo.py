@@ -64,17 +64,14 @@ class PolicyTestCase(unittest.TestCase):
             self.assertEqual(template, mapperTemplate)
 
 
-def suite():
+class MemoryTester(lsst.utils.tests.MemoryTestCase):
+    pass
+
+
+def setup_module(module):
     lsst.utils.tests.init()
 
-    suites = []
-    suites += unittest.makeSuite(PolicyTestCase)
-    suites += unittest.makeSuite(lsst.utils.tests.MemoryTestCase)
-    return unittest.TestSuite(suites)
 
-
-def run(shouldExit=False):
-    lsst.utils.tests.run(suite(), shouldExit)
-
-if __name__ == '__main__':
-    run(True)
+if __name__ == "__main__":
+    lsst.utils.tests.init()
+    unittest.main()

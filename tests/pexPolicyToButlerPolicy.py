@@ -52,13 +52,13 @@ class PolicyTestCase(unittest.TestCase):
                 pexVal = pexPolicy.get(name)
             val = policy[name]
             if isinstance(val, dafPolicy):
-                self.assertTrue(pexPolicy.getValueType(name) == pexPolicy.POLICY)
+                self.assertEqual(pexPolicy.getValueType(name), pexPolicy.POLICY)
             else:
                 self.assertEqual(val, pexVal)
 
         for name in pexPolicy.names():
             if pexPolicy.getValueType(name) == pexPolicy.POLICY:
-                self.assertTrue(isinstance(policy.get(name), dafPolicy))
+                self.assertIsInstance(policy.get(name), dafPolicy)
             else:
                 if pexPolicy.isArray(name):
                     pexVal = pexPolicy.getArray(name)

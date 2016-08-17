@@ -114,7 +114,7 @@ class TestMapperTestCase(unittest.TestCase):
             tuples2 = self.mapper.queryMetadata("raw", ["visit", "filter"], dict(filter=filt))
             self.assertEqual(len(tuples2), len(visitList))
             for visit in visitList:
-                self.assertTrue((visit, filt) in tuples2)
+                self.assertIn((visit, filt), tuples2)
 
     def testCanStandardize(self):
         self.assertTrue(self.mapper.canStandardize("raw"))
@@ -127,7 +127,7 @@ class TestMapperTestCase(unittest.TestCase):
         rawImage = afwImage.DecoratedImageU(pathToRaw)
         dataId = dict(visit=1)
         stdImage = self.mapper.standardize("raw", rawImage, dataId)
-        self.assertTrue(isinstance(stdImage, afwImage.ExposureU))
+        self.assertIsInstance(stdImage, afwImage.ExposureU)
 
     def testCameraFromButler(self):
         """Test that the butler can return the camera

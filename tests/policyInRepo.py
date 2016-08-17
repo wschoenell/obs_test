@@ -29,6 +29,7 @@ from lsst.pex import policy as pexPolicy
 from lsst.obs.test import TestMapper
 import lsst.utils.tests as utilsTests
 
+
 class PolicyTestCase(unittest.TestCase):
     """Tests related to the use of the policy file in Butler/butlerUtils."""
 
@@ -62,6 +63,7 @@ class PolicyTestCase(unittest.TestCase):
             mapperTemplate = mapper.mappings['postISRCCD'].template
             self.assertEqual(template, mapperTemplate)
 
+
 def suite():
     utilsTests.init()
 
@@ -69,6 +71,7 @@ def suite():
     suites += unittest.makeSuite(PolicyTestCase)
     suites += unittest.makeSuite(utilsTests.MemoryTestCase)
     return unittest.TestSuite(suites)
+
 
 def run(shouldExit=False):
     utilsTests.run(suite(), shouldExit)

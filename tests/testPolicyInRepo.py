@@ -26,7 +26,8 @@ import os
 import unittest
 
 import lsst.pex.policy
-from lsst.obs.test import TestMapper
+# we only import lsst.obs.test.TestMapper from lsst.obs.test, but use the namespace to hide it from pytest
+import lsst.obs.test
 import lsst.utils.tests
 
 
@@ -49,7 +50,7 @@ class PolicyTestCase(unittest.TestCase):
         )
 
         for mapperRoot, actualPolicyPath in testData:
-            mapper = TestMapper(root=mapperRoot)
+            mapper = lsst.obs.test.TestMapper(root=mapperRoot)
             repoPolicy = lsst.pex.policy.Policy_createPolicy(actualPolicyPath)
             template = repoPolicy.get('exposures.raw.template')
             mapperTemplate = mapper.mappings['raw'].template

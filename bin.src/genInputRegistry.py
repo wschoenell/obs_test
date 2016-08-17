@@ -102,7 +102,7 @@ def processRawDir(rawDir, conn, done, qsp):
 
         visit, filterName = m.groups()
         key = "%s_f%s" % (visit, filterName)
-        if done.has_key(key):
+        if key in done:
             nSkipped += 1
             continue
 

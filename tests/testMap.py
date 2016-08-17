@@ -53,7 +53,7 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,
                                                            "config", "processCcd.py")])
-        for k, v in dataId.iteritems():
+        for k, v in dataId.items():
             self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testMapMetadataData(self):
@@ -64,7 +64,7 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getStorageName(), "BoostStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,
                                                            "processCcd_metadata", "v1_fg.boost")])
-        for k, v in dataId.iteritems():
+        for k, v in dataId.items():
             self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testKeys(self):
@@ -97,7 +97,7 @@ class TestMapperTestCase(unittest.TestCase):
             self.assertEqual(len(locationList), 1)
             fileName = os.path.basename(locationList[0])
             self.assertEqual(fileName, "raw_v1_fg.fits.gz")
-            for k, v in dataId.iteritems():
+            for k, v in dataId.items():
                 self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testQueryMetadata(self):

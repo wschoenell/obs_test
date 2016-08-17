@@ -1,6 +1,8 @@
+from future import standard_library
+standard_library.install_aliases()
 #!/usr/bin/env python
 
-import cPickle
+import pickle
 import os
 
 for raft in ["0,1", "0,2", "0,3"]:
@@ -15,4 +17,4 @@ for raft in ["0,1", "0,2", "0,3"]:
                           channel[0] + channel[2]) * 10 + snap
                 if raft != "0,3" or (snap != 1 and sensor != "0,1"):
                     with open(loc, "w") as f:
-                        cPickle.dump(num, f)
+                        pickle.dump(num, f)

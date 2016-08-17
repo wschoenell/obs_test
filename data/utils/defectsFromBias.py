@@ -22,7 +22,6 @@ from __future__ import absolute_import, division, print_function
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 import argparse
-import itertools
 import time
 
 import numpy
@@ -96,6 +95,6 @@ Output is written to the current directory as file %r, which must not already ex
 
     test2BBoxList = getBBoxList(DefectsPath, detectorName)
     assert len(bboxList) == len(test2BBoxList)
-    for boxA, boxB in itertools.izip(bboxList, test2BBoxList):
+    for boxA, boxB in zip(bboxList, test2BBoxList):
         assert boxA == boxB
     print("verified that defects file %r round trips correctly" % (DefectsPath,))

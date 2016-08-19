@@ -24,6 +24,7 @@ from __future__ import absolute_import, division, print_function
 import argparse
 import time
 
+from builtins import zip
 import numpy
 import pyfits
 

@@ -19,7 +19,8 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-import numpy
+import numpy as np
+
 import lsst.afw.cameraGeom as cameraGeom
 import lsst.afw.geom as afwGeom
 from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
@@ -54,7 +55,7 @@ class TestCamera(cameraGeom.Camera):
         """
         plateScale = afwGeom.Angle(20, afwGeom.arcseconds)  # plate scale, in angle on sky/mm
         radialDistortion = 0.925  # radial distortion in mm/rad^2
-        radialCoeff = numpy.array((0.0, 1.0, 0.0, radialDistortion)) / plateScale.asRadians()
+        radialCoeff = np.array((0.0, 1.0, 0.0, radialDistortion)) / plateScale.asRadians()
         focalPlaneToPupil = afwGeom.RadialXYTransform(radialCoeff)
         pupilToFocalPlane = afwGeom.InvertedXYTransform(focalPlaneToPupil)
         cameraTransformMap = cameraGeom.CameraTransformMap(cameraGeom.FOCAL_PLANE,

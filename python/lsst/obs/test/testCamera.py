@@ -27,6 +27,8 @@ from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
 from lsst.afw.cameraGeom import NullLinearityType
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
 
+__all__ = ["TestCamera"]
+
 
 class TestCamera(cameraGeom.Camera):
     """A simple test Camera

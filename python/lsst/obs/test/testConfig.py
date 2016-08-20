@@ -24,6 +24,7 @@ import lsst.pex.config as pexConfig
 
 __all__ = ["TestConfig"]
 
+
 class TestConfig(pexConfig.Config):
     floatField = pexConfig.Field(doc="float field", dtype=float, default=3.1)
     strField = pexConfig.Field(doc="str field", dtype=str, default="default for strField")

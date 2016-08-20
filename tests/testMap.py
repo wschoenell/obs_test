@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# 
+#
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
-# 
+#
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
 #
@@ -11,34 +11,36 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# You should have received a copy of the LSST License Statement and 
-# the GNU General Public License along with this program.  If not, 
+#
+# You should have received a copy of the LSST License Statement and
+# the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
 import os
 import unittest
 
-import lsst.utils
-import lsst.utils.tests as utilsTests
-from lsst.obs.test import TestMapper
+import lsst.utils.tests
+from lsst.utils import getPackageDir
+# we only import TestMapper from lsst.obs.test, but use the namespace to hide it from pytest
+import lsst.obs.test
 from lsst.daf.persistence import Butler
-import lsst.afw.image as afwImage
+from lsst.afw.image import DecoratedImageU, ExposureU
+
 
 class TestMapperTestCase(unittest.TestCase):
     """A test case for the test mapper."""
 
     def setUp(self):
-        obsTestDir = lsst.utils.getPackageDir('obs_test')
+        obsTestDir = getPackageDir('obs_test')
         self.input = os.path.join(obsTestDir, "data", "input")
         self.output = self.input
-        self.mapper = TestMapper(root=self.input)
+        self.mapper = lsst.obs.test.TestMapper(root=self.input)
 
     def tearDown(self):
         del self.mapper
@@ -50,8 +52,8 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getCppType(), "Config")
         self.assertEqual(loc.getStorageName(), "ConfigStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,
-            "config", "processCcd.py")])
-        for k, v in dataId.iteritems():
+                                                           "config", "processCcd.py")])
+        for k, v in dataId.items():
             self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testMapMetadataData(self):
@@ -61,13 +63,13 @@ class TestMapperTestCase(unittest.TestCase):
         self.assertEqual(loc.getCppType(), "PropertySet")
         self.assertEqual(loc.getStorageName(), "BoostStorage")
         self.assertEqual(loc.getLocations(), [os.path.join(self.output,
-            "processCcd_metadata", "v1_fg.boost")])
-        for k, v in dataId.iteritems():
+                                                           "processCcd_metadata", "v1_fg.boost")])
+        for k, v in dataId.items():
             self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testKeys(self):
         self.assertEqual(set(self.mapper.keys()),
-                set(['filter', 'patch', 'skyTile', 'tract', 'visit', 'pixel_id']))
+                         set(['filter', 'patch', 'skyTile', 'tract', 'visit', 'pixel_id']))
 
     def testGetDatasetTypes(self):
         someKeys = set(['raw', 'processCcd_config', 'processCcd_metadata'])
@@ -75,9 +77,9 @@ class TestMapperTestCase(unittest.TestCase):
 
     def testGetKeys(self):
         self.assertEqual(set(self.mapper.getKeys("raw", "skyTile")),
-                set(["filter"]))
+                         set(["filter"]))
         self.assertEqual(set(self.mapper.getKeys("raw", "visit")),
-                set(["filter", "visit"]))
+                         set(["filter", "visit"]))
 
     def testGetDefaultLevel(self):
         self.assertEqual(self.mapper.getDefaultLevel(), "visit")
@@ -95,7 +97,7 @@ class TestMapperTestCase(unittest.TestCase):
             self.assertEqual(len(locationList), 1)
             fileName = os.path.basename(locationList[0])
             self.assertEqual(fileName, "raw_v1_fg.fits.gz")
-            for k, v in dataId.iteritems():
+            for k, v in dataId.items():
                 self.assertEqual(loc.getAdditionalData().get(k), v)
 
     def testQueryMetadata(self):
@@ -113,7 +115,7 @@ class TestMapperTestCase(unittest.TestCase):
             tuples2 = self.mapper.queryMetadata("raw", ["visit", "filter"], dict(filter=filt))
             self.assertEqual(len(tuples2), len(visitList))
             for visit in visitList:
-                self.assertTrue((visit, filt) in tuples2)
+                self.assertIn((visit, filt), tuples2)
 
     def testCanStandardize(self):
         self.assertTrue(self.mapper.canStandardize("raw"))
@@ -123,10 +125,10 @@ class TestMapperTestCase(unittest.TestCase):
 
     def testStandardizeRaw(self):
         pathToRaw = os.path.join(self.input, "raw", "raw_v1_fg.fits.gz")
-        rawImage = afwImage.DecoratedImageU(pathToRaw)
+        rawImage = DecoratedImageU(pathToRaw)
         dataId = dict(visit=1)
         stdImage = self.mapper.standardize("raw", rawImage, dataId)
-        self.assertTrue(isinstance(stdImage, afwImage.ExposureU))
+        self.assertIsInstance(stdImage, ExposureU)
 
     def testCameraFromButler(self):
         """Test that the butler can return the camera
@@ -139,11 +141,11 @@ class TestMapperTestCase(unittest.TestCase):
 
     def testExposureIdInfo(self):
         butler = Butler(self.input)
-        expIdBits = self.mapper.bypass_ccdExposureId_bits( # args are ignored
-            datasetType = None,
-            pythonType = int,
-            location = None,
-            dataId = dict(),
+        expIdBits = self.mapper.bypass_ccdExposureId_bits(  # args are ignored
+            datasetType=None,
+            pythonType=int,
+            location=None,
+            dataId=dict(),
         )
         for visit in (1, 2, 3):
             dataId = dict(visit=visit)
@@ -160,21 +162,19 @@ class TestMapperTestCase(unittest.TestCase):
         ]:
             self.assertEqual(self.mapper.validate(dataId), dataId)
         for dataId in [
-            dict(visit="not-an-int"), # visit must be an integer
+            dict(visit="not-an-int"),  # visit must be an integer
         ]:
             self.assertRaises(Exception, self.mapper.validate, dataId)
 
 
-def suite():
-    utilsTests.init()
+class MemoryTester(lsst.utils.tests.MemoryTestCase):
+    pass
 
-    suites = []
-    suites += unittest.makeSuite(TestMapperTestCase)
-    suites += unittest.makeSuite(utilsTests.MemoryTestCase)
-    return unittest.TestSuite(suites)
 
-def run(shouldExit=False):
-    utilsTests.run(suite(), shouldExit)
+def setup_module(module):
+    lsst.utils.tests.init()
 
-if __name__ == '__main__':
-    run(True)
+
+if __name__ == "__main__":
+    lsst.utils.tests.init()
+    unittest.main()

@@ -1,2 +1,2 @@
-config.doDark=False
-config.doFringe=False
+config.doDark = False
+config.doFringe = False

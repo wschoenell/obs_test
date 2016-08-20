@@ -19,12 +19,16 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-import numpy
+import numpy as np
+
 import lsst.afw.cameraGeom as cameraGeom
 import lsst.afw.geom as afwGeom
 from lsst.afw.table import AmpInfoCatalog, AmpInfoTable, LL
 from lsst.afw.cameraGeom import NullLinearityType
 from lsst.afw.cameraGeom.cameraFactory import makeDetector
+
+__all__ = ["TestCamera"]
+
 
 class TestCamera(cameraGeom.Camera):
     """A simple test Camera
@@ -47,16 +51,17 @@ class TestCamera(cameraGeom.Camera):
     ccd: ccd number: always 0
     visit: exposure number; test data includes one exposure with visit=1
     """
+
     def __init__(self):
         """Construct a TestCamera
         """
-        plateScale = afwGeom.Angle(20, afwGeom.arcseconds) # plate scale, in angle on sky/mm
-        radialDistortion = 0.925 # radial distortion in mm/rad^2
-        radialCoeff = numpy.array((0.0, 1.0, 0.0, radialDistortion)) / plateScale.asRadians()
+        plateScale = afwGeom.Angle(20, afwGeom.arcseconds)  # plate scale, in angle on sky/mm
+        radialDistortion = 0.925  # radial distortion in mm/rad^2
+        radialCoeff = np.array((0.0, 1.0, 0.0, radialDistortion)) / plateScale.asRadians()
         focalPlaneToPupil = afwGeom.RadialXYTransform(radialCoeff)
         pupilToFocalPlane = afwGeom.InvertedXYTransform(focalPlaneToPupil)
         cameraTransformMap = cameraGeom.CameraTransformMap(cameraGeom.FOCAL_PLANE,
-            {cameraGeom.PUPIL: pupilToFocalPlane})
+                                                           {cameraGeom.PUPIL: pupilToFocalPlane})
         detectorList = self._makeDetectorList(pupilToFocalPlane)
         cameraGeom.Camera.__init__(self, "test", detectorList, cameraTransformMap)
 
@@ -112,12 +117,12 @@ class TestCamera(cameraGeom.Camera):
         of usable bias region (which is used to set rawHOverscanBbox, despite the name),
         followed by the data. There is no other underscan or overscan.
         """
-        xDataExtent = 509 # trimmed
+        xDataExtent = 509  # trimmed
         yDataExtent = 1000
         xBiasExtent = 4
         xRawExtent = xDataExtent + xBiasExtent
         yRawExtent = yDataExtent
-        readNoise = 3.975 # amplifier read noise, in e-
+        readNoise = 3.975  # amplifier read noise, in e-
         saturationLevel = 65535
         linearityType = NullLinearityType
         linearityCoeffs = [0, 0, 0, 0]
@@ -180,6 +185,6 @@ class TestCamera(cameraGeom.Camera):
                 record.setHasRawInfo(True)
                 record.setRawFlipX(False)
                 record.setRawFlipY(False)
-                record.setRawVerticalOverscanBBox(afwGeom.Box2I()) # no vertical overscan
-                record.setRawPrescanBBox(afwGeom.Box2I()) # no horizontal prescan
+                record.setRawVerticalOverscanBBox(afwGeom.Box2I())  # no vertical overscan
+                record.setRawPrescanBBox(afwGeom.Box2I())  # no horizontal prescan
         return ampCatalog

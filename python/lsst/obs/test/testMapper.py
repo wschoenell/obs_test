@@ -30,6 +30,7 @@ from .testCamera import TestCamera
 
 __all__ = ["TestMapper"]
 
+
 class TestMapper(CameraMapper):
     packageName = 'obs_test'
 
@@ -47,7 +48,7 @@ class TestMapper(CameraMapper):
 
         CameraMapper.__init__(self, policy, policyFile.getRepositoryPath(), **kwargs)
         self.filterIdMap = {
-                'u': 0, 'g': 1, 'r': 2, 'i': 3, 'z': 4, 'y': 5, 'i2': 5}
+            'u': 0, 'g': 1, 'r': 2, 'i': 3, 'z': 4, 'y': 5, 'i2': 5}
 
         # The LSST Filters from L. Jones 04/07/10
         afwImageUtils.defineFilter('u', 364.59)
@@ -55,7 +56,7 @@ class TestMapper(CameraMapper):
         afwImageUtils.defineFilter('r', 619.42)
         afwImageUtils.defineFilter('i', 752.06)
         afwImageUtils.defineFilter('z', 866.85)
-        afwImageUtils.defineFilter('y', 971.68, alias=['y4']) # official y filter
+        afwImageUtils.defineFilter('y', 971.68, alias=['y4'])  # official y filter
 
     def _extractDetectorName(self, dataId):
         return "0"
@@ -75,7 +76,7 @@ class TestMapper(CameraMapper):
         @param dataId (dict) Data identifier with visit
         """
         visit = dataId['visit']
-        return long(visit)
+        return int(visit)
 
     def bypass_ccdExposureId(self, datasetType, pythonType, location, dataId):
         return self._computeCcdExposureId(dataId)
@@ -97,4 +98,3 @@ class TestMapper(CameraMapper):
         """Make a camera (instance of lsst.afw.cameraGeom.Camera) describing the camera geometry
         """
         return TestCamera()
-

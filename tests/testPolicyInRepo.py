@@ -25,11 +25,15 @@
 import os
 import unittest
 
-from lsst.pex import policy as pexPolicy
-from lsst.obs.test import TestMapper
-import lsst.utils.tests as utilsTests
+import lsst.pex.policy
+# we only import lsst.obs.test.TestMapper from lsst.obs.test, but use the namespace to hide it from pytest
+import lsst.obs.test
+import lsst.utils.tests
+from lsst.utils import getPackageDir
+
 
 class PolicyTestCase(unittest.TestCase):
+
     """Tests related to the use of the policy file in Butler/butlerUtils."""
 
     def testInRepoPolicyOverrides(self):
@@ -39,17 +43,17 @@ class PolicyTestCase(unittest.TestCase):
         Checks that values not specified in the local _policy file are set with those of the package's
         _policy file.
         """
-
+        obsTestRepoDir = os.path.join(getPackageDir("obs_test"), "data")
         testData = (
-            (os.path.join('data', 'policyInRepo1/a'),
-                os.path.join('data', 'policyInRepo1', 'a', '_parent', '_policy.paf')),
-            (os.path.join('data', 'policyInRepo2/a'),
-                os.path.join('data', 'policyInRepo2', 'a', '_parent', '_parent', '_policy.paf'))
+            (os.path.join(obsTestRepoDir, 'policyInRepo1/a'),
+                os.path.join(obsTestRepoDir, 'policyInRepo1', 'a', '_parent', '_policy.paf')),
+            (os.path.join(obsTestRepoDir, 'policyInRepo2/a'),
+                os.path.join(obsTestRepoDir, 'policyInRepo2', 'a', '_parent', '_parent', '_policy.paf'))
         )
 
         for mapperRoot, actualPolicyPath in testData:
-            mapper = TestMapper(root=mapperRoot)
-            repoPolicy = pexPolicy.Policy_createPolicy(actualPolicyPath)
+            mapper = lsst.obs.test.TestMapper(root=mapperRoot)
+            repoPolicy = lsst.pex.policy.Policy_createPolicy(actualPolicyPath)
             template = repoPolicy.get('exposures.raw.template')
             mapperTemplate = mapper.mappings['raw'].template
             self.assertEqual(template, mapperTemplate)
@@ -57,21 +61,20 @@ class PolicyTestCase(unittest.TestCase):
             # Run a simple test case to verify that although the package's policy was overloaded with some
             # values, other values specified in the policy file in the package are loaded.
             policyPath = os.path.join('policy', 'testMapper.paf')
-            policy = pexPolicy.Policy_createPolicy(policyPath)
+            policy = lsst.pex.policy.Policy_createPolicy(policyPath)
             template = policy.get('exposures.postISRCCD.template')
             mapperTemplate = mapper.mappings['postISRCCD'].template
             self.assertEqual(template, mapperTemplate)
 
-def suite():
-    utilsTests.init()
 
-    suites = []
-    suites += unittest.makeSuite(PolicyTestCase)
-    suites += unittest.makeSuite(utilsTests.MemoryTestCase)
-    return unittest.TestSuite(suites)
+class MemoryTester(lsst.utils.tests.MemoryTestCase):
+    pass
 
-def run(shouldExit=False):
-    utilsTests.run(suite(), shouldExit)
 
-if __name__ == '__main__':
-    run(True)
+def setup_module(module):
+    lsst.utils.tests.init()
+
+
+if __name__ == "__main__":
+    lsst.utils.tests.init()
+    unittest.main()

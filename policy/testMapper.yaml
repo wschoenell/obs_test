@@ -8,6 +8,8 @@ calibrations:
   fringe: {columns: filter, level: Ccd, persistable: ExposureF, python: lsst.afw.image.ExposureF,
     reference: raw, storage: FitsStorage, template: fringe/fringe_f%(filter)s.fits.gz}
 datasets:
+  measureCoaddSources_config: {persistable: Config, storage: ConfigStorage,
+    python: lsst.pipe.tasks.multiBand.MeasureMergedCoaddSourcesConfig, template: config/measureMerged.py}
   Mosaic_config: {persistable: Config, python: lsst.meas.mosaic.mosaicTask.MosaicConfig,
     storage: ConfigStorage, tables: raw_skyTile, template: config/mosaic.py}
   Mosaic_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet, storage: BoostStorage,
@@ -50,6 +52,8 @@ datasets:
     storage: FitsCatalogStorage, tables: raw_skyTile, template: deepCoadd_results/%(filter)s_t%(tract)d_p%(patch)s/multiModelfits_%(filter)s_%(tract)d_%(patch)s.fits}
   deepCoadd_multiModelfits_schema: {persistable: ModelFitCatalog, python: lsst.meas.multifit.ModelFitCatalog,
     storage: FitsCatalogStorage, tables: raw_skyTile, template: schema/deepCoadd_multiModelfits.fits}
+  deepCoadd_meas_schema: {persistable: SourceCatalog, python: lsst.afw.table.SourceCatalog,
+    storage: FitsCatalogStorage, template: schema/deepCoadd_meas.fits}
   forced_config: {persistable: Config, python: lsst.meas.base.forcedCcd.ForcedCcdMeasurementConfig,
     storage: ConfigStorage, tables: raw_skyTile, template: config/forced.py}
   forced_metadata: {persistable: PropertySet, python: lsst.daf.base.PropertySet, storage: BoostStorage,
